@@ -1,4 +1,4 @@
-**Hello and welcome to the Bare Minimum Legends nifty-but-gritty space. You can find some stuff here! Like our Software Engineering (SE) project, where ideas are built, bugs are battled, and progress is made...sometimes heroically, sometimes… minimally.
+Hello and welcome to the Bare Minimum Legends nifty-but-gritty space. You can find some stuff here! Like our Software Engineering (SE) project, where ideas are built, bugs are battled, and progress is made...sometimes heroically, sometimes… minimally.
 
 Rules:
 
