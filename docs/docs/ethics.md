@@ -1,9 +1,5 @@
 # Ethical and Security Considerations (Sprint 1)
 
-testing
-
-again
-
 This document identifies ethical, security, and usability risks relevant to the "Bare Minimum Legends (Game Tips)" application, and outlines mitigation strategies aligned with responsible software engineering practice.
 
 ---
@@ -101,5 +97,3 @@ If the interface is not accessible, users with visual or cognitive needs may str
 ---
 ## Conclusion
 These issues will be revisited throughout development. Ethical design, usability, and security will be actively considered during sprint planning, feature implementation, and testing to ensure the product remains safe, inclusive, and aligned with the theme of mutual aid.
-
-renaato
