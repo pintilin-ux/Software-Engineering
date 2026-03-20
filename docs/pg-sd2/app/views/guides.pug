@@ -1,0 +1,109 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Bare Minimum | Guides
+    link(rel="stylesheet", href="/styles.css")
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
+
+  body
+
+    // NAVBAR
+    header.navbar
+      .logo Bare Minimum
+      nav
+        ul.nav-links
+          li: a(href="/") Home
+          li: a.active(href="/guides") Guides
+          li: a(href="/videos") Videos
+          li: a(href="/about") About Us
+      a.login-btn(href="/login") Login
+
+    // PAGE CONTENT
+    main.container
+
+      // FILTER SIDEBAR
+      aside.filters
+        h2 Filters
+
+        label Game
+        select
+          option All
+          option Valorant
+          option CS2
+          option Fortnite
+
+        label Skill level
+        select
+          option All
+          option Beginner
+          option Intermediate
+          option Advanced
+
+        label Category
+        select
+          option All
+          option Aim
+          option Strategy
+          option Movement
+
+        label Rating
+        select
+          option Any
+          option 4+
+          option 3+
+
+      // GUIDES SECTION
+      section.guides
+
+        h1 Guides
+
+        .guides-grid
+
+          // Guide Card
+          .guide-card
+            p How to Improve Aim in Valorant
+            .guide-card-tags
+               span.tag.tag--skill Beginner
+               span.tag.tag--game Valorant
+               span.tag.tag--category Aim
+            span.rating ⭐ 4.8
+            a.btn(href="/guide-details") Read Guide
+
+          // Guide Card
+          .guide-card
+            p How to Improve Aim in Valorant
+            .guide-card-tags
+               span.tag.tag--skill Beginner
+               span.tag.tag--game Valorant
+               span.tag.tag--category Aim
+            span.rating ⭐ 4.8
+            a.btn(href="/guide-details") Read Guide
+
+          // Guide Card
+          .guide-card
+            p How to Improve Aim in Valorant
+            .guide-card-tags
+               span.tag.tag--skill Beginner
+               span.tag.tag--game Valorant
+               span.tag.tag--category Aim
+            span.rating ⭐ 4.8
+            a.btn(href="/guide-details") Read Guide
+
+          // Guide Card
+          .guide-card
+            p How to Improve Aim in Valorant
+            .guide-card-tags
+               span.tag.tag--skill Beginner
+               span.tag.tag--game Valorant
+               span.tag.tag--category Aim
+            span.rating ⭐ 4.8
+            a.btn(href="/guide-details") Read Guide
+
+
+    // FOOTER
+    footer.footer
+      p © Bare Minimum 2025
