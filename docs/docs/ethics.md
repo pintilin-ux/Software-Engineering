@@ -99,3 +99,5 @@ If the interface is not accessible, users with visual or cognitive needs may str
 ---
 ## Conclusion
 These issues will be revisited throughout development. Ethical design, usability, and security will be actively considered during sprint planning, feature implementation, and testing to ensure the product remains safe, inclusive, and aligned with the theme of mutual aid.
+
+renaato
