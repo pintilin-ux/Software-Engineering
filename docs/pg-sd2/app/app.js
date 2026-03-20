@@ -29,6 +29,16 @@ app.get("/profile", function (req, res) {
     res.render("profile");
 });
 
+// Create a route for root - /videos
+app.get("/videos", function (req, res) {
+    res.render("videos");
+});
+
+// Create a route for root - /about
+app.get("/about", function (req, res) {
+    res.render("about");
+});
+
 // Create a route for root - /index
 app.get("/index", function (req, res) {
     res.render("index");
