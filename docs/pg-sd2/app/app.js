@@ -29,6 +29,7 @@ app.get("/profile", function (req, res) {
     res.render("profile");
 });
 
+// Create a route for root - /index
 app.get("/index", function (req, res) {
     res.render("index");
 });
