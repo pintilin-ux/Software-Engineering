@@ -1,0 +1,74 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Bare Minimum | Guide
+    link(rel="stylesheet", href="/styles.css")
+    link(rel="preconnect", href="https://fonts.googleapis.com")
+    link(rel="preconnect", href="https://fonts.gstatic.com" crossorigin)
+    link(href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Orbitron:wght@400..900&display=swap" rel="stylesheet")
+
+  body
+
+    // NAVBAR
+    header.navbar
+      .logo Bare Minimum
+      nav
+        ul.nav-links
+          li: a(href="/") Home
+          li: a.active(href="/guides") Guides
+          li: a(href="/videos") Videos
+          li: a(href="/about") About Us
+      a.login-btn(href="/login") Login
+
+    // PAGE CONTENT
+    main.guide-detail-page
+      .guide-detail-back
+        a(href="/guides") ← Guides
+
+      .guide-detail-header
+            h1 How to Improve Aim in Valorant
+            .guide-detail-rating
+              span ⭐4.5
+
+      .guide-detail-tags
+            span.tag Beginner
+            span.tag Valorant
+            span.tag Aim
+
+      .guide-detail-layout
+        section.guide-detail-content
+          .guide-detail-text
+            p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem.
+            p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem.
+            p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem.
+            p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem.
+
+        aside.guide-detail-comments
+
+          .guide-detail-comments-box
+            h2 Comments
+            input.guide-detail-input(type="text" placeholder="Write a comments...")
+
+            .guide-detail-comment
+              .guide-detail-avatar
+              .guide-detail-comment-body
+                h3 GamerPro
+                p Really helpful guide, thanks for the tip
+
+            .guide-detail-comment
+              .guide-detail-avatar
+              .guide-detail-comment-body
+                h3 GamerPro
+                p Really helpful guide, thanks for the tip
+
+            .guide-detail-comment
+              .guide-detail-avatar
+              .guide-detail-comment-body
+                h3 GamerPro
+                p Really helpful guide, thanks for the tip
+
+    // FOOTER
+    footer.footer
+      p © Bare Minimum 2025
