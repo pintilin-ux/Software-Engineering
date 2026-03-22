@@ -14,14 +14,25 @@ app.set('views', './app/views');
 // Get the functions in the db.js file to use
 const db = require('./services/db');
 
+const { Guide } = require("./models/guide");
+
 // Create a route for root - /
 app.get("/", function(req, res) {
     res.send("Hello world!");
 });
 
 // Create a route for root - /guides
-app.get("/guides", function(req, res) {
-    res.render("guides");
+app.get("/guides", async function(req, res) {
+    var guides = await Guide.getAllGuides();
+    res.render("guides", { guides: guides });
+});
+
+// Create a route for root - /guide details
+app.get("/guide-details/:id", async function(req, res) {
+    var gId = req.params.id;
+    var guide = new Guide(gId);
+    await guide.getGuideDetails();
+    res.render("guide-details", { guide: guide });
 });
 
 // Create a route for root - /profile
@@ -31,11 +42,6 @@ app.get("/profile", function (req, res) {
 
 app.get("/index", function (req, res) {
     res.render("index");
-});
-
-// Create a route for root - /guide details
-app.get("/guide-details", function(req, res) {
-    res.render("guide-details");
 });
 
 // Create a route for testing the db

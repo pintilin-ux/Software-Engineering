@@ -62,47 +62,18 @@ html(lang="en")
         h1 Guides
 
         .guides-grid
-
-          // Guide Card
-          .guide-card
-            p How to Improve Aim in Valorant
-            .guide-card-tags
-               span.tag.tag--skill Beginner
-               span.tag.tag--game Valorant
-               span.tag.tag--category Aim
-            span.rating ⭐ 4.8
-            a.btn(href="/guide-details") Read Guide
-
-          // Guide Card
-          .guide-card
-            p How to Improve Aim in Valorant
-            .guide-card-tags
-               span.tag.tag--skill Beginner
-               span.tag.tag--game Valorant
-               span.tag.tag--category Aim
-            span.rating ⭐ 4.8
-            a.btn(href="/guide-details") Read Guide
-
-          // Guide Card
-          .guide-card
-            p How to Improve Aim in Valorant
-            .guide-card-tags
-               span.tag.tag--skill Beginner
-               span.tag.tag--game Valorant
-               span.tag.tag--category Aim
-            span.rating ⭐ 4.8
-            a.btn(href="/guide-details") Read Guide
-
-          // Guide Card
-          .guide-card
-            p How to Improve Aim in Valorant
-            .guide-card-tags
-               span.tag.tag--skill Beginner
-               span.tag.tag--game Valorant
-               span.tag.tag--category Aim
-            span.rating ⭐ 4.8
-            a.btn(href="/guide-details") Read Guide
-
+          each guide in guides
+            .guide-card
+              .guide-info-wrap 
+                p.guide-card-title= guide.title
+                .likes-container 
+                  img(src="/images/Like_icon.svg")
+                  p.like-number 5
+              .guide-card-tags
+                span.tag.tag--skill= guide.skillLevel
+                span.tag.tag--category= guide.genre
+              p.guide-content= guide.getShortContent()
+              a.btn(href="/guide-details/" + guide.id) Read Guide
 
     // FOOTER
     footer.footer
