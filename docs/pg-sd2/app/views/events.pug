@@ -1,0 +1,10 @@
+extends websitelayout
+block content
+    h1 All Events
+
+    each event in events
+      div
+        h2
+          a(href=`/events/${event.EventID}`)= event.Event_Name
+        p Skill level: #{event.Skill_level}
+        p Posted by: #{event.username}
