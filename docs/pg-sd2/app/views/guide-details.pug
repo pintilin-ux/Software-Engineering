@@ -28,22 +28,20 @@ html(lang="en")
         a(href="/guides") ← Guides
 
       .guide-detail-header
-            h1 How to Improve Aim in Valorant
+            h1=guide.title
             .guide-detail-rating
               span ⭐4.5
 
       .guide-detail-tags
-            span.tag Beginner
-            span.tag Valorant
-            span.tag Aim
+            span.tag=guide.genre
+            span.tag=guide.skillLevel
+
+      p Created at #{guide.createdAt}
 
       .guide-detail-layout
         section.guide-detail-content
           .guide-detail-text
-            p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem.
-            p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem.
-            p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem.
-            p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem.
+            p=guide.content
 
         aside.guide-detail-comments
 
@@ -51,23 +49,12 @@ html(lang="en")
             h2 Comments
             input.guide-detail-input(type="text" placeholder="Write a comments...")
 
-            .guide-detail-comment
-              .guide-detail-avatar
-              .guide-detail-comment-body
-                h3 GamerPro
-                p Really helpful guide, thanks for the tip
-
-            .guide-detail-comment
-              .guide-detail-avatar
-              .guide-detail-comment-body
-                h3 GamerPro
-                p Really helpful guide, thanks for the tip
-
-            .guide-detail-comment
-              .guide-detail-avatar
-              .guide-detail-comment-body
-                h3 GamerPro
-                p Really helpful guide, thanks for the tip
+            each comment in guide.comments
+              .guide-detail-comment
+                .guide-detail-avatar
+                .guide-detail-comment-body
+                  h3 #{comment.username}
+                  p #{comment.comment}
 
     // FOOTER
     footer.footer

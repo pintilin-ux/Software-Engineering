@@ -13,6 +13,9 @@ app.set('views', './app/views');
 
 // Get the functions in the db.js file to use
 const db = require('./services/db');
+const db2 = require('./services/db2');
+
+const { Guide } = require("./models/guide");
 
 // Create a route for root - /
 app.get("/", function(req, res) {
@@ -20,8 +23,26 @@ app.get("/", function(req, res) {
 });
 
 // Create a route for root - /guides
-app.get("/guides", function(req, res) {
-    res.render("guides");
+app.get("/guides", async function(req, res) {
+    const search = req.query.search || "";
+    const skillLevel = req.query.skillLevel || "All";
+    const genre = req.query.genre || "All";
+    const guides = await Guide.getFilteredGuides(search, skillLevel, genre);
+    res.render("guides", {
+        guides: guides,
+        search: search,
+        skillLevel: skillLevel,
+        genre: genre
+    });
+});
+
+// Create a route for root - /guide details
+app.get("/guide-details/:id", async function(req, res) {
+    var gId = req.params.id;
+    var guide = new Guide(gId);
+    await guide.getGuideDetails();
+    await guide.getComments();
+    res.render("guide-details", { guide: guide });
 });
 
 // Create a route for root - /profile
@@ -44,9 +65,13 @@ app.get("/index", function (req, res) {
     res.render("index");
 });
 
-// Create a route for root - /guide details
-app.get("/guide-details", function(req, res) {
-    res.render("guide-details");
+app.get("/cw-users", async function(req, res) {
+    try {
+        const users = await db2.query('SELECT * FROM users');
+        res.json(users);
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
 });
 
 // Create a route for testing the db
