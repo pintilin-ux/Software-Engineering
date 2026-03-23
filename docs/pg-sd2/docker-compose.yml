@@ -5,6 +5,10 @@ services:
       context: ./
     volumes:
       - .:/src
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
     command: supervisor -e  'js,pug,html' index.js
     ports:
       - "3000:3000"
