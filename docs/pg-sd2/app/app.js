@@ -54,6 +54,14 @@ app.get("/index", function (req, res) {
     res.render("index");
 });
 
+app.get("/videos", function (req, res) {
+    res.render("videos");
+});
+
+app.get("/about", function (req, res) {
+    res.render("about");
+});
+
 app.get("/cw-users", async function(req, res) {
     try {
         const users = await db2.query('SELECT * FROM users');

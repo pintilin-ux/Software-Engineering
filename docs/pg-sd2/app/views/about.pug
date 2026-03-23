@@ -1,20 +1,10 @@
-doctype html
-html
-  head
-    title About Us
-    link(rel='stylesheet', href='/css/about.css')
-  body
+extends websitelayout
 
-    nav.navbar
-      .nav-logo Logo
-      ul.nav-links
-        li: a(href='/') Home
-        li: a(href='/guides') Guides
-        li: a(href='/videos') Videos
-        li: a(href='/about').active About Us
-      a.nav-login(href='/login') Login
+block styles 
+  link(rel="stylesheet", href="/style/about.css")
 
-    main.container
+block content 
+    .container
 
       section.about-header
         h1 About Us
