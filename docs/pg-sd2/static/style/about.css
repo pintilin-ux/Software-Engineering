@@ -1,0 +1,136 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #050c1f;
+  background-image:
+    radial-gradient(ellipse at 20% 20%, rgba(29,78,216,0.18) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 80%, rgba(91,33,182,0.12) 0%, transparent 60%);
+     min-height: 100vh;
+}
+
+/* ── Navbar ── */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #aab4d4;
+  font-size: 14px;
+}
+
+.nav-links a.active {
+  font-weight: bold;
+  color: #fff;
+}
+
+.nav-login {
+  text-decoration: none;
+  color: #aab4d4;
+  font-size: 14px;
+}
+
+.nav-logo {
+  color: #fff;
+  font-weight: bold;
+}
+
+/* ── Container ── */
+.container {
+  max-width: 1100px;
+  margin: 30px auto;
+  padding: 0 30px;
+}
+
+/* ── About Header ── */
+.about-header h1 {
+  font-size: 32px;
+  text-decoration: underline;
+  margin-bottom: 16px;
+  color: #fff;
+}
+
+.about-box {
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  padding: 20px;
+  font-style: italic;
+  font-size: 15px;
+  line-height: 1.7;
+  color: #aab4d4;
+  background: rgba(255,255,255,0.05);
+}
+
+/* ── Team Section ── */
+.team {
+  margin-top: 60px;
+  text-align: center;
+}
+
+.team h2 {
+  font-size: 28px;
+  margin-bottom: 40px;
+  color: #fff;
+  letter-spacing: 1px;
+}
+
+.team-row {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  margin-bottom: 40px;
+}
+
+.team-member {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar-wrap {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  padding: 3px;
+  background: linear-gradient(135deg, rgba(29,78,216,0.6), rgba(91,33,182,0.6));
+}
+
+.avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #1a2035;
+  display: block;
+}
+
+.team-member h3 {
+  font-style: italic;
+  font-size: 17px;
+  color: #fff;
+}
+
+.team-member .role {
+  font-size: 13px;
+  color: #aab4d4;
+  background: rgba(255,255,255,0.06);
+  padding: 2px 12px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
