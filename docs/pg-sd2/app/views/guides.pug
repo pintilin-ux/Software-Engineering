@@ -1,29 +1,10 @@
-doctype html
-html(lang="en")
-  head
-    meta(charset="UTF-8")
-    meta(name="viewport", content="width=device-width, initial-scale=1.0")
-    title Bare Minimum | Guides
-    link(rel="stylesheet", href="/styles.css")
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
+extends websitelayout
 
-  body
+block styles 
+  link(rel="stylesheet", href="/style/guides.css")
 
-    // NAVBAR
-    header.navbar
-      .logo Bare Minimum
-      nav
-        ul.nav-links
-          li: a(href="/") Home
-          li: a.active(href="/guides") Guides
-          li: a(href="/videos") Videos
-          li: a(href="/about") About Us
-      a.login-btn(href="/login") Login
-
-    // PAGE CONTENT
-    main.container
+block content
+    .container
 
       // FILTER SIDEBAR
       aside.filters
@@ -74,7 +55,3 @@ html(lang="en")
                 span.tag.tag--category= guide.genre
               p.guide-content= guide.getShortContent()
               a.btn(href="/guide-details/" + guide.id) Read Guide
-
-    // FOOTER
-    footer.footer
-      p © Bare Minimum 2025
