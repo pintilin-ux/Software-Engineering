@@ -16,6 +16,8 @@ const db = require('./services/db');
 const db2 = require('./services/db2');
 
 const { Guide } = require("./models/guide");
+const { Event } = require("./models/events");
+
 
 // Create a route for root - /
 app.get("/", function(req, res) {
@@ -34,6 +36,25 @@ app.get("/guides", async function(req, res) {
         skillLevel: skillLevel,
         genre: genre
     });
+});
+
+app.get("/events", async function(req, res) {
+    try {
+        const events = await Event.getAll();
+        res.render('events', { events });
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+});
+
+app.get("/events/:id", async function(req, res) {
+    try {
+        const id = req.params.id;
+        const event = await Event.getById(id);
+        res.render('event-single', { event });
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
 });
 
 // Create a route for root - /guide details
