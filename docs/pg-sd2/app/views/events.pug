@@ -19,7 +19,7 @@ html
         a(href='/guides') Guides
         a(href='/videos') Videos
         a(href='/about') About Us
-        a(href='/events') Tournaments
+        a(href='/events') Events
         a(href='/profile') Profile
       a.btn-join-now(href='/login') Join Now
 
@@ -27,12 +27,12 @@ html
 
       .tournaments-page
 
-        h1.page-title Tournaments
+        h1.page-title Events
 
         //- ── FEATURED TOURNAMENT ──
         if featured
           .featured-card
-            p.featured-label ⭐ Featured Tournament
+            p.featured-label ⭐ Featured Event
             .featured-body
               .featured-left
                 h2.featured-title= featured.title
@@ -73,11 +73,11 @@ html
                     .stat-num Live
                     .stat-lbl Bracket
 
-        //- ── FIND A TOURNAMENT ──
+        //- ── FIND A EVENT ──
         .section-header
-          h2.section-title Find a Tournament
+          h2.section-title Find a Event
           .search-box
-            input(type='text', placeholder='Search tournaments...', id='searchInput', oninput='searchCards()')
+            input(type='text', placeholder='Search Events...', id='searchInput', oninput='searchCards()')
 
         .filter-tags
           button.filter-tag.active(onclick='filterTags(this, "all")') All
@@ -110,7 +110,7 @@ html
                   button.btn-sm-primary(type='button') Join
                   button.btn-sm-outline(type='button') Details
         else
-          p.empty-state No upcoming tournaments right now. Check back soon! 🎮
+          p.empty-state No upcoming events right now. Check back soon! 🎮
 
         //- ── HIGHLIGHTS ──
         h2.section-title(style='margin-bottom:1rem;margin-top:2rem') Tournament Highlights
@@ -139,7 +139,7 @@ html
           a(href='/guides') Guides
           a(href='/videos') Videos
           a(href='/about') About Us
-          a(href='/events') Tournaments
+          a(href='/events') Events
           a(href='/profile') Profile
         .footer-social
           a.social-btn(href='#' aria-label='Instagram')
