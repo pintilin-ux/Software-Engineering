@@ -50,8 +50,61 @@ app.get("/guide-details/:id", async function(req, res) {
 });
 
 // Create a route for root - /profile
-app.get("/profile", function (req, res) {
-    res.render("profile");
+app.get("/profile", async function (req, res) {
+    try {
+        const userId = 101;
+
+        const userRows = await db.query(`
+            SELECT userID, username, bio, favouriteGame, platform, joined
+            FROM users
+            WHERE userID = ?
+        `, [userId]);
+
+        const createdRows = await db.query(`
+            SELECT COUNT(*) AS tipsCreated
+            FROM guides
+            WHERE userID = ?
+        `, [userId]);
+
+        const likedRows = await db.query(`
+            SELECT COUNT(*) AS tipsLiked
+            FROM likes
+            WHERE userID = ?
+        `, [userId]);
+
+        const upcomingEvents = await db.query(`
+            SELECT Event_Name, date
+            FROM Events
+            WHERE userID = ? AND status = 'upcoming'
+            ORDER BY date ASC
+        `, [userId]);
+
+        const completedEvents = await db.query(`
+            SELECT Event_Name, date
+            FROM Events
+            WHERE userID = ? AND status = 'completed'
+            ORDER BY date DESC
+        `, [userId]);
+
+        const user = userRows[0];
+        
+        const stats = {
+            tipsCreated: createdRows[0].tipsCreated,
+            tipsSaved: 0,
+            tipsLiked: likedRows[0].tipsLiked
+        };
+
+        res.render("profile", {
+            user,
+            stats,
+            upcomingEvents,
+            completedEvents
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).send(err.message);
+    }
 });
 
 // Create a route for root - /videos
