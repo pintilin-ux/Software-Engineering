@@ -55,7 +55,7 @@ app.get("/profile", async function (req, res) {
         const userId = 101;
 
         const userRows = await db.query(`
-            SELECT userID, username, bio, favouriteGame, platform, joined
+            SELECT userID, username, bio
             FROM users
             WHERE userID = ?
         `, [userId]);
@@ -75,14 +75,14 @@ app.get("/profile", async function (req, res) {
         const upcomingEvents = await db.query(`
             SELECT Event_Name, date
             FROM Events
-            WHERE userID = ? AND status = 'upcoming'
+            WHERE userID = ?
             ORDER BY date ASC
         `, [userId]);
 
         const completedEvents = await db.query(`
             SELECT Event_Name, date
             FROM Events
-            WHERE userID = ? AND status = 'completed'
+            WHERE userID = ?
             ORDER BY date DESC
         `, [userId]);
 
