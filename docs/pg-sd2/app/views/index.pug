@@ -1,35 +1,41 @@
 extends websitelayout
 
+block styles 
+  link(rel="stylesheet", href="/style/index.css")
+
 block content
+  
+  section.hero
+    img(src="/images/black.webp" alt="Guide image" width="1000")
+    span.image-text Black Myth Legend
 
-  .block-image
-    a(href="/guides/1")
-      img(src="/images/black.webp" alt="Guide image" width="1000")
-      span.image-text Black Myth Legend
-  h1 Welcome
-  p Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-  p Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  section.intro 
+    h1 Welcome
+    p Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    p Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
 
-  .video-grid
-    .block-video
-      iframe(
-        src="https://www.youtube.com/embed/Nci6Oy_rNhY"
-        title="YouTube video"
-        frameborder="0"
-        allowfullscreen
-        p Final Fantasy
-      )
-    .block-video
-      iframe(
-        src="https://www.youtube.com/embed/Cr5rQ1NZ0Tw"
-        title="YouTube video"
-        frameborder="0"
-        allowfullscreen
-      )
-    .block-video
-      iframe(
-        src="https://www.youtube.com/embed/lvTA95QRKxE"
-        title="YouTube video"
-        frameborder="0"
-        allowfullscreen
-      )
+  section.trend-video
+    h1 Trending Videos 
+    .video-grid 
+      .block-video
+        iframe(
+          src="https://www.youtube.com/embed/Nci6Oy_rNhY"
+          title="YouTube video"
+          frameborder="0"
+          allowfullscreen
+          p Final Fantasy
+        )
+      .block-video
+        iframe(
+          src="https://www.youtube.com/embed/Cr5rQ1NZ0Tw"
+          title="YouTube video"
+          frameborder="0"
+          allowfullscreen
+        )
+      .block-video
+        iframe(
+          src="https://www.youtube.com/embed/lvTA95QRKxE"
+          title="YouTube video"
+          frameborder="0"
+          allowfullscreen
+        )

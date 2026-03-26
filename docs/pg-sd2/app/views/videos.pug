@@ -1,30 +1,20 @@
-doctype html
-html
-  head
-    title Videos
-    link(rel='stylesheet', href='/style/videos.css')
-  body
+extends websitelayout
 
-    nav.navbar
-      .nav-logo Logo
-      ul.nav-links
-        li: a(href='/') Home
-        li: a(href='/guides') Guides
-        li: a(href='/videos').active Videos
-        li: a(href='/about') About Us
-      a.nav-login(href='/login') Login
+block styles 
+  link(rel="stylesheet", href="/style/videos.css")
 
-    main.container
+block content
+    .container
 
       section.game-selection
-        h2 Game Selection
+        h3 Game Selection
         select.game-dropdown
           option Silk Song
           option Valorant
           option Fortnite
 
       section.featured
-        h3.featured-title Top Videos This week
+        h2.featured-title Top Videos This week
         .carousel
           button.carousel-btn.prev &#8592;
           .carousel-track

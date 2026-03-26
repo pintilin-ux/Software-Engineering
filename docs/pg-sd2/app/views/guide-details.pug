@@ -10,19 +10,19 @@ block content
 
       .guide-detail-header
             h1=guide.title
-            .guide-detail-rating
-              span ⭐4.5
+            .likes-container 
+                img(src="/images/Like_icon.svg")
+                p.like-number 5
 
       .guide-detail-tags
             span.tag=guide.genre
             span.tag=guide.skillLevel
 
-      p Created at #{guide.createdAt}
+      p.guide-time Created at #{guide.createdAt}
 
       .guide-detail-layout
         section.guide-detail-content
-          .guide-detail-text
-            p=guide.content
+          p=guide.content
 
         aside.guide-detail-comments
 
