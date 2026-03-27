@@ -1,0 +1,108 @@
+extends websitelayout
+
+block styles 
+  link(rel="stylesheet", href="/style/events.css")
+
+block content
+    .tournaments-page
+
+        h1.page-title Events
+
+        //- ── FEATURED TOURNAMENT ──
+        if featured
+          .featured-card
+            p.featured-label ⭐ Featured Event
+            .featured-body
+              .featured-left
+                h2.featured-title= featured.title
+                p.featured-desc= featured.description || featured.skill_level || ''
+                .featured-meta
+                  .meta-row
+                    span 🎮
+                    | &nbsp;Game:&nbsp;
+                    span.meta-val= featured.game_name || 'TBC'
+                  .meta-row
+                    span 📅
+                    | &nbsp;Date:&nbsp;
+                    - var d = featured.start_date || featured.date
+                    span.meta-val= d ? new Date(d).toLocaleDateString('en-GB', {day:'numeric', month:'long', year:'numeric'}) : 'TBC'
+                  if featured.prize
+                    .meta-row
+                      span 🏆
+                      | &nbsp;Prize:&nbsp;
+                      span.meta-val= featured.prize
+                  .meta-row
+                    span 🔢
+                    | &nbsp;Slots Left:&nbsp;
+                    span.meta-val= (featured.max_participants || 100) - (featured.participant_count || 0)
+                .featured-btns
+                  button.btn-primary(type='button') Join Tournament
+                  button.btn-outline(type='button') View Details
+
+              .featured-right
+                .trophy 🏆
+                .featured-stats
+                  .stat-box
+                    .stat-num= featured.participant_count || 0
+                    .stat-lbl Teams
+                  .stat-box
+                    .stat-num= (featured.max_participants || 100) - (featured.participant_count || 0)
+                    .stat-lbl Slots Left
+                  .stat-box
+                    .stat-num Live
+                    .stat-lbl Bracket
+
+        //- ── FIND A EVENT ──
+        .section-header
+          h2.section-title Find a Event
+          .search-box
+            input(type='text', placeholder='Search Events...', id='searchInput', oninput='searchCards()')
+
+        .filter-tags
+          button.filter-tag.active(onclick='filterTags(this, "all")') All
+          each game in games
+            button.filter-tag(onclick='filterTags(this, "' + game.slug + '")') #{game.name}
+          button.filter-tag(onclick='filterTags(this, "solo")') Solo
+          button.filter-tag(onclick='filterTags(this, "duo")') Duo
+          button.filter-tag(onclick='filterTags(this, "team")') Team
+
+        //- ── TOURNAMENT CARDS ──
+        if events && events.length
+          .cards-grid#cardsGrid
+            each event in events
+              .t-card(data-tag=(event.game_slug || '') + ' ' + (event.format || ''), data-title=(event.title || event.event_name || '').toLowerCase())
+                .t-card__title= event.title || event.event_name
+                p.t-card__desc= event.description || event.skill_level || ''
+                .t-card__meta
+                  .t-card__meta-row
+                    span 🎮
+                    | &nbsp;#{event.game_name || 'TBC'}
+                  .t-card__meta-row
+                    - var ed = event.start_date || event.date
+                    span 📅
+                    | &nbsp;#{ed ? new Date(ed).toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'}) : 'TBC'}
+                  if event.prize
+                    .t-card__meta-row
+                      span 🏆
+                      | &nbsp;#{event.prize}
+                .t-card__btns
+                  button.btn-sm-primary(type='button') Join
+                  button.btn-sm-outline(type='button') Details
+        else
+          p.empty-state No upcoming events right now. Check back soon! 🎮
+
+        //- ── HIGHLIGHTS ──
+        h2.section-title(style='margin-bottom:1rem;margin-top:2rem') Tournament Highlights
+        .highlights-grid
+          .highlight-box
+            .highlight-label Top Game
+            .highlight-value= highlights.topGame
+          .highlight-box
+            .highlight-label Active Players
+            .highlight-value= highlights.activePlayers
+          .highlight-box
+            .highlight-label This Week's Events
+            .highlight-value= highlights.weekEvents
+          .highlight-box
+            .highlight-label Top Reward
+            .highlight-value.gold 🥇 #{highlights.topPrize}

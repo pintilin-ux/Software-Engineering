@@ -1,109 +1,57 @@
-doctype html
-html(lang="en")
-  head
-    meta(charset="UTF-8")
-    meta(name="viewport", content="width=device-width, initial-scale=1.0")
-    title Bare Minimum | Guides
-    link(rel="stylesheet", href="/styles.css")
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
+extends websitelayout
 
-  body
+block styles 
+  link(rel="stylesheet", href="/style/guides.css")
 
-    // NAVBAR
-    header.navbar
-      .logo Bare Minimum
-      nav
-        ul.nav-links
-          li: a(href="/") Home
-          li: a.active(href="/guides") Guides
-          li: a(href="/videos") Videos
-          li: a(href="/about") About Us
-      a.login-btn(href="/login") Login
-
-    // PAGE CONTENT
-    main.container
+block content
+    .container
 
       // FILTER SIDEBAR
       aside.filters
         h2 Filters
+        form(method="GET", action="/guides")
+          input(type="hidden" name="search" value=search)
 
-        label Game
-        select
-          option All
-          option Valorant
-          option CS2
-          option Fortnite
+          label(for="skillLevel") Skill level
+          select(name="skillLevel" id="skillLevel")
+            option(value="All" selected=skillLevel === "All") All
+            option(value="Beginner" selected=skillLevel === "Beginner") Beginner
+            option(value="Intermediate" selected=skillLevel === "Intermediate") Intermediate
+            option(value="Advanced" selected=skillLevel === "Advanced") Advanced
 
-        label Skill level
-        select
-          option All
-          option Beginner
-          option Intermediate
-          option Advanced
+          label(for="genre") Genre
+          select(name="genre" id="genre")
+            option(value="All" selected=genre === "All") All
+            option(value="Strategy" selected=genre === "Strategy") Strategy
+            option(value="Cooking" selected=genre === "Cooking") Cooking
+            option(value="Programming" selected=genre === "Programming") Programming
+            option(value="Gaming" selected=genre === "Gaming") Gaming
 
-        label Category
-        select
-          option All
-          option Aim
-          option Strategy
-          option Movement
-
-        label Rating
-        select
-          option Any
-          option 4+
-          option 3+
+          button.btn(type="submit") Filter
+          a.btn(href="/guides") Reset
 
       // GUIDES SECTION
       section.guides
 
         h1 Guides
+        form.search-form(method="GET", action="/guides")
+          input(type="hidden" name="skillLevel" value=skillLevel)
+          input(type="hidden" name="genre" value=genre)
+          .search-wrapper
+            input(type="text" name="search" placeholder="Search..." value=search)
+            button(type="submit")
+              img(src="/images/search-icon.svg", alt="Search")
 
         .guides-grid
-
-          // Guide Card
-          .guide-card
-            p How to Improve Aim in Valorant
-            .guide-card-tags
-               span.tag.tag--skill Beginner
-               span.tag.tag--game Valorant
-               span.tag.tag--category Aim
-            span.rating ⭐ 4.8
-            a.btn(href="/guide-details") Read Guide
-
-          // Guide Card
-          .guide-card
-            p How to Improve Aim in Valorant
-            .guide-card-tags
-               span.tag.tag--skill Beginner
-               span.tag.tag--game Valorant
-               span.tag.tag--category Aim
-            span.rating ⭐ 4.8
-            a.btn(href="/guide-details") Read Guide
-
-          // Guide Card
-          .guide-card
-            p How to Improve Aim in Valorant
-            .guide-card-tags
-               span.tag.tag--skill Beginner
-               span.tag.tag--game Valorant
-               span.tag.tag--category Aim
-            span.rating ⭐ 4.8
-            a.btn(href="/guide-details") Read Guide
-
-          // Guide Card
-          .guide-card
-            p How to Improve Aim in Valorant
-            .guide-card-tags
-               span.tag.tag--skill Beginner
-               span.tag.tag--game Valorant
-               span.tag.tag--category Aim
-            span.rating ⭐ 4.8
-            a.btn(href="/guide-details") Read Guide
-
-
-    // FOOTER
-    footer.footer
-      p © Bare Minimum 2025
+          each guide in guides
+            .guide-card
+              .guide-info-wrap 
+                p.guide-card-title= guide.title
+                .likes-container 
+                  img(src="/images/Like_icon.svg")
+                  p.like-number 5
+              .guide-card-tags
+                span.tag.tag--skill= guide.skillLevel
+                span.tag.tag--category= guide.genre
+              p.guide-content= guide.getShortContent()
+              a.btn(href="/guide-details/" + guide.id) Read Guide

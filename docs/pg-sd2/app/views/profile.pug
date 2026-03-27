@@ -1,0 +1,80 @@
+extends websitelayout
+
+block styles
+  link(rel="stylesheet", href="/style/profile.css")
+
+block content
+  .profile-shell
+    .profile-panel
+      .profile-topbar
+        .profile-brand Bare Minimum
+        a.profile-edit(href="#") Edit Profile
+
+      .profile-main
+        .profile-left
+          h1.profile-title Profile Page
+
+          .profile-avatar-row
+            .profile-avatar
+            .profile-name-block
+              h2= user.username
+              p.profile-subtitle Part of Name
+
+          .profile-bio-card
+            h3 Bio
+            p= user.bio
+
+            .profile-meta
+              p
+                strong Favourite Game:
+                |  #{user.favouriteGame}
+              p
+                strong Skill Level:
+                |  #{user.skillLevel}
+              p
+                strong Platform:
+                |  #{user.platform}
+              p
+                strong Joined:
+                |  #{user.joined}
+
+        .profile-right
+          .overview-card
+            h3 Activity Overview
+            .overview-row
+              span Created
+              strong= stats.tipsCreated
+            .overview-row
+              span Saved
+              strong= stats.tipsSaved
+            .overview-row
+              span Liked
+              strong= stats.tipsLiked
+            .overview-row
+              span Events Joined
+              strong 12
+
+          .graph-card
+            h3 Contribution Graph
+            .graph-grid
+              each n in [1,2,3,4,5,6,7,8,9,10,11,12]
+                span.graph-box
+
+      .profile-bottom
+        .event-column
+          h3 Upcoming Events
+          .event-card
+            h4 Valorant Night Cup – 25 March 2026
+            p Competitive team event
+          .event-card
+            h4 Fortnite Duo Clash – 25 March 2026
+            p Casual community event
+
+        .event-column
+          h3 Completed Events
+          .event-card
+            h4 Rocket League Championship
+            p 10 February 2026
+          .event-card
+            h4 CS GO Pro Series
+            p 5 January 2026

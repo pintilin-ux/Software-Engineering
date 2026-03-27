@@ -1,0 +1,164 @@
+body{
+    margin:0;
+    min-height: 100vh;
+    background: linear-gradient(
+      to bottom,
+     #091330 0%,
+     #1E40A4 50%,
+     #091330 100%
+    );
+    color:white;
+    font-family: "Inter", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
+}
+
+h1, h2, h3, h4, h5{
+    font-family: "Orbitron", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+}
+h1{
+    font-size: 40px;
+}
+
+.page{
+    padding: 0 30px;
+}
+
+/* ── HEADER ── */
+
+header{
+    padding:20px 0;
+}
+
+.header-nav{
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    border: 1px solid #3A4567;
+    border-radius: 5px;
+}
+
+.header-nav ul{
+    display:flex;
+    align-items:center;
+    list-style:none;
+    padding:0;
+    margin:0;
+}
+
+.header-nav li{
+    margin-right:15px;
+    padding-right:15px;
+    border-right:1px solid rgba(0,0,0,0.15);
+}
+
+.header-nav li:last-child{
+    border-right:none;
+}
+
+.header-nav ul a{
+    text-decoration:none;
+    color:white;
+    transition: all 0.15s;
+}
+
+.header-nav ul a:hover{
+    color:#2563EB;
+}
+.header-btn{
+    background: #2563EB;
+    padding: 10px 20px;
+    border-radius: 10px;
+    color:white;
+    text-decoration:none;
+    font-size:14px;
+    font-weight: 600;
+    margin: auto 0;
+    transition: all 0.15s;
+}
+
+.header-btn:hover {
+    background: #1E40A4;
+}
+
+main{
+    padding:20px 0;
+}
+
+/* ── FOOTER ── */
+
+.site-footer {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    border-top: 1px solid #3A4567; 
+    border-radius: 5px;
+    padding: 70px 0;
+    margin-top: 50px;
+}
+
+.footer-brand-col { 
+    display: flex; 
+    align-items: center; 
+    gap: 1rem; 
+}
+
+.footer-crosshair { 
+    font-size: 1.4rem; 
+    color: #fff; 
+}
+
+.footer-brand { 
+    font-size: 1.4rem; 
+    font-weight: 700; 
+    color: #fff; 
+}
+
+.footer-nav { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 0.75rem; 
+}
+
+.footer-nav a { 
+    color: var(--text); 
+    text-decoration: none; 
+    font-size: 0.9rem; 
+    transition: color 0.2s; 
+}
+
+.footer-nav a:hover { 
+    color: #2563EB; 
+}
+
+
+.footer-social { 
+    display: flex; 
+    gap: 0.75rem; 
+    margin-left: 25%; 
+}
+
+.social-btn {
+  width: 44px; 
+  height: 44px; 
+  border-radius: 50%;
+  background: #1e3a6e; 
+  display: flex; align-items: center; 
+  justify-content: center;
+  color: #fff; 
+  text-decoration: none; 
+  transition: background 0.2s;
+}
+
+.social-btn:hover { 
+    background: #1E40A4; 
+}
+
+.social-btn svg { 
+    width: 20px; 
+    height: 20px; 
+}

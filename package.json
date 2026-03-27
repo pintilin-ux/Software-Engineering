@@ -1,0 +1,13 @@
+{
+    "name": "software-engineering",
+    "version": "1.0.0",
+    "description": "Sprint 3 profile page",
+    "main": "app.js",
+    "scripts": {
+        "start": "node app.js"
+    },
+    "dependencies": {
+        "express": "^4.18.2",
+        "pug": "^3.0.2"
+    }
+}
