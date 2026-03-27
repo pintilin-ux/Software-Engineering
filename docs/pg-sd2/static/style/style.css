@@ -1,18 +1,22 @@
-body{
-    margin:0;
+body {
+    margin: 0;
     min-height: 100vh;
+
     background: linear-gradient(
-      to bottom,
-     #091330 0%,
-     #1E40A4 50%,
-     #091330 100%
+        to bottom,
+        #091330 0%,
+        #1E40A4 50%,
+        #091330 100%
     );
-    color:white;
-    font-family: "Inter", sans-serif;
+
+    color: white;
+
+    font-family: "Inter", Arial, Helvetica, sans-serif;
     font-optical-sizing: auto;
     font-weight: 300;
     font-style: normal;
 }
+
 
 h1, h2, h3, h4, h5{
     font-family: "Orbitron", sans-serif;
@@ -26,6 +30,10 @@ h1{
 
 .page{
     padding: 0 30px;
+    max-width: 1000px;
+    margin: 0 auto;      
+    padding: 0 30px;
+    width: 100%;
 }
 
 /* ── HEADER ── */
