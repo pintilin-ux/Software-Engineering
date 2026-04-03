@@ -49,13 +49,12 @@ app.get("/guide-details/:id", async function(req, res) {
     res.render("guide-details", { guide: guide });
 });
 
-// Create a route for root - /profile
 app.get("/profile", async function (req, res) {
     try {
         const userId = 101;
 
         const userRows = await db.query(`
-            SELECT userID, username, bio
+            SELECT username, bio, favouriteGame, platform, joined, skillLevel
             FROM users
             WHERE userID = ?
         `, [userId]);
@@ -72,33 +71,39 @@ app.get("/profile", async function (req, res) {
             WHERE userID = ?
         `, [userId]);
 
-        const upcomingEvents = await db.query(`
-            SELECT Event_Name, date
-            FROM Events
+        const tips = await db.query(`
+            SELECT title, game, summary, date
+            FROM guides
             WHERE userID = ?
-            ORDER BY date ASC
         `, [userId]);
 
-        const completedEvents = await db.query(`
-            SELECT Event_Name, date
-            FROM Events
-            WHERE userID = ?
-            ORDER BY date DESC
-        `, [userId]);
-
-        const user = userRows[0];
-        
-        const stats = {
-            tipsCreated: createdRows[0].tipsCreated,
-            tipsSaved: 0,
-            tipsLiked: likedRows[0].tipsLiked
+        const user = {
+            username: userRows[0]?.username,
+            email: "username@email.com", // şu an DB’de yok
+            bio: userRows[0]?.bio,
+            joined: userRows[0]?.joined,
+            favouriteGame: userRows[0]?.favouriteGame,
+            skillLevel: userRows[0]?.skillLevel,
+            platform: userRows[0]?.platform
         };
+
+        const stats = {
+            tipsCreated: createdRows[0]?.tipsCreated || 0,
+            tipsSaved: 0,
+            tipsLiked: likedRows[0]?.tipsLiked || 0
+        };
+
+        const formattedTips = tips.map(tip => ({
+            title: tip.title,
+            game: tip.game,
+            date: tip.date,
+            summary: tip.summary
+        }));
 
         res.render("profile", {
             user,
             stats,
-            upcomingEvents,
-            completedEvents
+            tips: formattedTips
         });
 
     } catch (err) {
@@ -106,12 +111,6 @@ app.get("/profile", async function (req, res) {
         res.status(500).send(err.message);
     }
 });
-
-// Create a route for root - /videos
-app.get("/videos", function (req, res) {
-    res.render("videos");
-});
-
 // Create a route for root - /about
 app.get("/about", function (req, res) {
     res.render("about");
