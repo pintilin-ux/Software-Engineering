@@ -4,89 +4,81 @@ block styles
   link(rel="stylesheet", href="/style/profile.css")
 
 block content
-  header.navbar
-    .logo Bare Minimum Legends
-    nav.nav-links
-      a(href="/") Home
-      a(href="#") Browse
-      a(href="/profile") Profile
-      a(href="#") Create Tip
-      a(href="#") Logout
+  .profile-shell
+    .profile-panel
 
-  main.profile-page
-    section.profile-card
-      .profile-left
-        .avatar-circle
+      .profile-topbar
+        .profile-brand Bare Minimum Legends
+        a.profile-edit(href="#") Edit Profile
 
-        .profile-info
-          h2= user.username
-          p
-            strong Email:
-            |  #{user.email}
-          p
-            strong Bio:
-            |  #{user.bio}
-          p
-            strong Joined:
-            |  #{user.joined}
-          p
-            strong Favourite Game:
-            |  #{user.favouriteGame}
-          p
-            strong Skill Level:
-            |  #{user.skillLevel}
-          p
-            strong Platform:
-            |  #{user.platform}
+      .profile-main
+        .profile-left
+          h1.profile-title Profile
 
-      .profile-right
-        button.edit-btn Edit Profile
+          .profile-avatar-row
+            .profile-avatar
+            .profile-name-block
+              h2= user.username
+              p.profile-subtitle= user.email
 
-    section.activity-section
-      h3 User Activity
-      .activity-cards
-        .activity-card
-          h4 Tips Created
-          p= stats.tipsCreated
-        .activity-card
-          h4 Tips Saved
-          p= stats.tipsSaved
-        .activity-card
-          h4 Tips Liked
-          p= stats.tipsLiked
+          .profile-bio-card
+            h3 About
+            p= user.bio
 
-    section.tabs
-      button.tab-btn.active My Tips
-      button.tab-btn Saved Tips
-      button.tab-btn Activity
+            .profile-meta
+              p
+                strong Joined:
+                |  #{user.joined}
+              p
+                strong Favourite Game:
+                |  #{user.favouriteGame}
+              p
+                strong Skill Level:
+                |  #{user.skillLevel}
+              p
+                strong Platform:
+                |  #{user.platform}
 
-    section.placeholder-section
-      .placeholder-card
-        h4 Saved Tips
-        p No saved tips yet. This section will display bookmarked or saved guides in a future version.
-      .placeholder-card
-        h4 Recent Activity
-        p No recent activity yet. This section will show likes, interactions and community engagement in a future version.
+        .profile-right
+          .overview-card
+            h3 Overview
+            .overview-row
+              span Tips Created
+              strong= stats.tipsCreated
+            .overview-row
+              span Tips Saved
+              strong= stats.tipsSaved
+            .overview-row
+              span Tips Liked
+              strong= stats.tipsLiked
 
-    section.tips-list
-      each tip in tips
-        .tip-item
-          .tip-thumbnail-box
+          .graph-card
+            h3 Activity
+            .graph-grid
+              span.graph-box
+              span.graph-box
+              span.graph-box
+              span.graph-box
+              span.graph-box
+              span.graph-box
+              span.graph-box
+              span.graph-box
 
-          .tip-details
-            h4= tip.title
-            p
-              strong Game:
-              |  #{tip.game}
-            p
-              strong Date:
-              |  #{tip.date}
-            p.tip-summary= tip.summary
-
-          .tip-actions
-            a.btn(href="#") Edit
-            a.btn(href="#") Delete
-            a.btn(href="#") View
-
-  footer.footer
-    p Bare Minimum Legends 2026
+      .profile-bottom
+        .event-column
+          h3 My Tips
+          if tips && tips.length
+            each tip in tips
+              .event-card
+                h4= tip.title
+                p
+                  strong Game:
+                  |  #{tip.game}
+                p
+                  strong Date:
+                  |  #{tip.date}
+                p= tip.summary
+          else
+            .event-card
+              h4 No tips yet
+              p This user has not created any tips yet.

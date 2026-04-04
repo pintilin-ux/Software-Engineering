@@ -3,12 +3,15 @@ const mysql = require('mysql2/promise');
 
 const poolNew = mysql.createPool({
   host: process.env.DB_CONTAINER,
+  port: process.env.DB_PORT,
   user: process.env.MYSQL_USER,
   password: process.env.MYSQL_PASSWORD,
-  database: 'coursework', // your new DB
+  database: process.env.MYSQL_DATABASE,
+  waitForConnections: true,
+  connectionLimit: 2,
+  queueLimit: 0,
 });
 
-// Query function (same pattern as your original db.js)
 async function query(sql, params) {
   const [rows] = await poolNew.execute(sql, params);
   return rows;

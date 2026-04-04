@@ -54,9 +54,10 @@ app.get("/profile", async function (req, res) {
         const userId = 101;
 
         const userRows = await db.query(`
-            SELECT username, bio, favouriteGame, platform, joined, skillLevel
-            FROM users
+            SELECT GID, title, content, Genre, Skill_level, created_at
+            FROM gudies
             WHERE userID = ?
+            ORDER BY created_at DESC
         `, [userId]);
 
         const createdRows = await db.query(`
@@ -93,11 +94,15 @@ app.get("/profile", async function (req, res) {
             tipsLiked: likedRows[0]?.tipsLiked || 0
         };
 
-        const formattedTips = tips.map(tip => ({
+        const formattedTips = tipsRows.map(tip => ({
             title: tip.title,
-            game: tip.game,
-            date: tip.date,
-            summary: tip.summary
+            game: tip.Genre || "Unknown",
+            date: tip.created_at 
+                ? new Date(tip.created_at).toLocaleDateString("en-GB")
+                : "No date",
+            summary: tip.content
+                ? tip.content.substring(0, 120) + (tip.content.length > 120 ? "..." : "")
+                : "No summary available"
         }));
 
         res.render("profile", {
