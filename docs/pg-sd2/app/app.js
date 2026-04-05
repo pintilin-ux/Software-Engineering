@@ -53,13 +53,14 @@ app.get("/profile", async function (req, res) {
     try {
         const userId = 101;
 
+        // 1. User info
         const userRows = await db.query(`
-            SELECT GID, title, content, Genre, Skill_level, created_at
-            FROM gudies
+            SELECT userID, username, bio, favouriteGame, platform, joined, skillLevel
+            FROM users
             WHERE userID = ?
-            ORDER BY created_at DESC
         `, [userId]);
 
+        // 2. Stats
         const createdRows = await db.query(`
             SELECT COUNT(*) AS tipsCreated
             FROM guides
@@ -72,20 +73,22 @@ app.get("/profile", async function (req, res) {
             WHERE userID = ?
         `, [userId]);
 
-        const tips = await db.query(`
-            SELECT title, game, summary, date
+        // 3. Tips
+        const tipsRows = await db.query(`
+            SELECT GID, title, content, Genre, Skill_level, created_at
             FROM guides
             WHERE userID = ?
+            ORDER BY created_at DESC
         `, [userId]);
 
         const user = {
-            username: userRows[0]?.username,
-            email: "username@email.com", // şu an DB’de yok
-            bio: userRows[0]?.bio,
-            joined: userRows[0]?.joined,
-            favouriteGame: userRows[0]?.favouriteGame,
-            skillLevel: userRows[0]?.skillLevel,
-            platform: userRows[0]?.platform
+            username: userRows[0]?.username || "Unknown User",
+            email: "username@email.com",
+            bio: userRows[0]?.bio || "No bio yet",
+            joined: userRows[0]?.joined || "Unknown",
+            favouriteGame: userRows[0]?.favouriteGame || "Unknown",
+            skillLevel: userRows[0]?.skillLevel || "Unknown",
+            platform: userRows[0]?.platform || "Unknown"
         };
 
         const stats = {
@@ -97,8 +100,8 @@ app.get("/profile", async function (req, res) {
         const formattedTips = tipsRows.map(tip => ({
             title: tip.title,
             game: tip.Genre || "Unknown",
-            date: tip.created_at 
-                ? new Date(tip.created_at).toLocaleDateString("en-GB")
+            date: tip.created_at
+                ? new Date(userRows[0].joined).toLocaleDateString("en-GB")
                 : "No date",
             summary: tip.content
                 ? tip.content.substring(0, 120) + (tip.content.length > 120 ? "..." : "")
