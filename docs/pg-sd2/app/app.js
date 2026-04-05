@@ -49,17 +49,18 @@ app.get("/guide-details/:id", async function(req, res) {
     res.render("guide-details", { guide: guide });
 });
 
-// Create a route for root - /profile
 app.get("/profile", async function (req, res) {
     try {
         const userId = 101;
 
+        // 1. User info
         const userRows = await db.query(`
-            SELECT userID, username, bio
+            SELECT userID, username, bio, favouriteGame, platform, joined, skillLevel
             FROM users
             WHERE userID = ?
         `, [userId]);
 
+        // 2. Stats
         const createdRows = await db.query(`
             SELECT COUNT(*) AS tipsCreated
             FROM guides
@@ -72,33 +73,45 @@ app.get("/profile", async function (req, res) {
             WHERE userID = ?
         `, [userId]);
 
-        const upcomingEvents = await db.query(`
-            SELECT Event_Name, date
-            FROM Events
+        // 3. Tips
+        const tipsRows = await db.query(`
+            SELECT GID, title, content, Genre, Skill_level, created_at
+            FROM guides
             WHERE userID = ?
-            ORDER BY date ASC
+            ORDER BY created_at DESC
         `, [userId]);
 
-        const completedEvents = await db.query(`
-            SELECT Event_Name, date
-            FROM Events
-            WHERE userID = ?
-            ORDER BY date DESC
-        `, [userId]);
-
-        const user = userRows[0];
-        
-        const stats = {
-            tipsCreated: createdRows[0].tipsCreated,
-            tipsSaved: 0,
-            tipsLiked: likedRows[0].tipsLiked
+        const user = {
+            username: userRows[0]?.username || "Unknown User",
+            email: "username@email.com",
+            bio: userRows[0]?.bio || "No bio yet",
+            joined: userRows[0]?.joined || "Unknown",
+            favouriteGame: userRows[0]?.favouriteGame || "Unknown",
+            skillLevel: userRows[0]?.skillLevel || "Unknown",
+            platform: userRows[0]?.platform || "Unknown"
         };
+
+        const stats = {
+            tipsCreated: createdRows[0]?.tipsCreated || 0,
+            tipsSaved: 0,
+            tipsLiked: likedRows[0]?.tipsLiked || 0
+        };
+
+        const formattedTips = tipsRows.map(tip => ({
+            title: tip.title,
+            game: tip.Genre || "Unknown",
+            date: tip.created_at
+                ? new Date(userRows[0].joined).toLocaleDateString("en-GB")
+                : "No date",
+            summary: tip.content
+                ? tip.content.substring(0, 120) + (tip.content.length > 120 ? "..." : "")
+                : "No summary available"
+        }));
 
         res.render("profile", {
             user,
             stats,
-            upcomingEvents,
-            completedEvents
+            tips: formattedTips
         });
 
     } catch (err) {
@@ -106,12 +119,6 @@ app.get("/profile", async function (req, res) {
         res.status(500).send(err.message);
     }
 });
-
-// Create a route for root - /videos
-app.get("/videos", function (req, res) {
-    res.render("videos");
-});
-
 // Create a route for root - /about
 app.get("/about", function (req, res) {
     res.render("about");
