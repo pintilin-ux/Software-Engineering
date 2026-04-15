@@ -9,7 +9,6 @@ block content
 
       .profile-topbar
         .profile-brand Bare Minimum Legends
-        a.profile-edit(href="#") Edit Profile
 
       .profile-main
         .profile-left
@@ -54,9 +53,14 @@ block content
 
           .graph-card
             h3 Activity
+            p.activity-note Profile activity overview based on user content and engagement.
             .graph-grid
-              each _ in [1, 2, 3, 4, 5, 6, 7, 8]
-                span.graph-box
+              if activityBoxes && activityBoxes.length
+                each box in activityBoxes
+                  span(class=`graph-box level-${box.level}`, title=`Activity value: ${box.value}`)
+              else
+                each _ in [1, 2, 3, 4, 5, 6, 7, 8]
+                  span.graph-box.level-1
 
       .profile-bottom
         .profile-section
@@ -82,13 +86,13 @@ block content
           if upcomingEvents && upcomingEvents.length
             each event in upcomingEvents
               .content-card
-                h4= event.Event_Name
+                h4= event.name
                 p
                   strong Date:
                   |  #{event.date}
                 p
                   strong Skill Level:
-                  |  #{event.Skill_level}
+                  |  #{event.skillLevel}
                 p
                   strong Status:
                   |  #{event.status}
@@ -102,13 +106,13 @@ block content
           if completedEvents && completedEvents.length
             each event in completedEvents
               .content-card
-                h4= event.Event_Name
+                h4= event.name
                 p
                   strong Date:
                   |  #{event.date}
                 p
                   strong Skill Level:
-                  |  #{event.Skill_level}
+                  |  #{event.skillLevel}
                 p
                   strong Status:
                   |  #{event.status}

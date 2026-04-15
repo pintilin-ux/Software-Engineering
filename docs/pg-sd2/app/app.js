@@ -100,14 +100,14 @@ app.get("/profile", async function (req, res) {
         `, [userId]);
 
         // 4. Events
-        const upcomingEvents = await db.query(`
+        const upcomingEventRows = await db.query(`
             SELECT Event_Name, date, Skill_level, status
             FROM Events
             WHERE userID = ? AND status = 'upcoming'
             ORDER BY date ASC
         `, [userId]);
 
-        const completedEvents = await db.query(`
+        const completedEventRows = await db.query(`
             SELECT Event_Name, date, Skill_level, status
             FROM Events
             WHERE userID = ? AND status = 'completed'
@@ -143,12 +143,53 @@ app.get("/profile", async function (req, res) {
                 : "No summary available"
         }));
 
+        const upcomingEvents = upcomingEventRows.map((event) => ({
+            name: event.Event_Name || "Untitled Event",
+            date: event.date
+                ? new Date(event.date).toLocaleDateString("en-GB")
+                : "No date",
+            skillLevel: event.Skill_level || "Unknown",
+            status: event.status || "Unknown"
+        }));
+
+        const completedEvents = completedEventRows.map((event) => ({
+            name: event.Event_Name || "Untitled Event",
+            date: event.date
+                ? new Date(event.date).toLocaleDateString("en-GB")
+                : "No date",
+            skillLevel: event.Skill_level || "Unknown",
+            status: event.status || "Unknown"
+        }));
+
+        // Activity boxes based on real profile data
+        const activityData = [
+            stats.tipsCreated,
+            stats.tipsLiked,
+            upcomingEvents.length,
+            completedEvents.length,
+            formattedTips.length > 0 ? 1 : 0,
+            user.bio && user.bio !== "No bio yet" ? 1 : 0,
+            user.favouriteGame !== "Unknown" ? 1 : 0,
+            user.platform !== "Unknown" ? 1 : 0
+        ];
+
+        const maxActivity = Math.max(...activityData, 1);
+
+        const activityBoxes = activityData.map((value) => {
+            const level = Math.max(1, Math.ceil((value / maxActivity) * 4));
+            return {
+                value,
+                level
+            };
+        });
+
         res.render("profile", {
             user,
             stats,
             tips: formattedTips,
             upcomingEvents,
-            completedEvents
+            completedEvents,
+            activityBoxes
         });
     } catch (err) {
         console.error("Error loading profile page:", err);
