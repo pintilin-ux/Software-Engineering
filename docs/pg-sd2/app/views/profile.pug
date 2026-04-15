@@ -55,21 +55,15 @@ block content
           .graph-card
             h3 Activity
             .graph-grid
-              span.graph-box
-              span.graph-box
-              span.graph-box
-              span.graph-box
-              span.graph-box
-              span.graph-box
-              span.graph-box
-              span.graph-box
+              each _ in [1, 2, 3, 4, 5, 6, 7, 8]
+                span.graph-box
 
       .profile-bottom
-        .event-column
+        .profile-section
           h3 My Tips
           if tips && tips.length
             each tip in tips
-              .event-card
+              .content-card
                 h4= tip.title
                 p
                   strong Game:
@@ -79,6 +73,46 @@ block content
                   |  #{tip.date}
                 p= tip.summary
           else
-            .event-card
+            .content-card.empty-state
               h4 No tips yet
               p This user has not created any tips yet.
+
+        .profile-section
+          h3 Upcoming Events
+          if upcomingEvents && upcomingEvents.length
+            each event in upcomingEvents
+              .content-card
+                h4= event.Event_Name
+                p
+                  strong Date:
+                  |  #{event.date}
+                p
+                  strong Skill Level:
+                  |  #{event.Skill_level}
+                p
+                  strong Status:
+                  |  #{event.status}
+          else
+            .content-card.empty-state
+              h4 No upcoming events
+              p This user has no upcoming events right now.
+
+        .profile-section
+          h3 Completed Events
+          if completedEvents && completedEvents.length
+            each event in completedEvents
+              .content-card
+                h4= event.Event_Name
+                p
+                  strong Date:
+                  |  #{event.date}
+                p
+                  strong Skill Level:
+                  |  #{event.Skill_level}
+                p
+                  strong Status:
+                  |  #{event.status}
+          else
+            .content-card.empty-state
+              h4 No completed events
+              p This user has not completed any events yet.
