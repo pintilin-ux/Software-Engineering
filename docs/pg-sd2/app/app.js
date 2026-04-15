@@ -2,53 +2,67 @@
 const express = require("express");
 
 // Create express app
-var app = express();
+const app = express();
 
 // Add static files location
 app.use(express.static("static"));
 
 // Use the Pug templating engine
-app.set('view engine', 'pug');
-app.set('views', './app/views');
+app.set("view engine", "pug");
+app.set("views", "./app/views");
 
 // Get the functions in the db.js file to use
-const db = require('./services/db');
-const db2 = require('./services/db2');
+const db = require("./services/db");
+const db2 = require("./services/db2");
 
 const { Guide } = require("./models/guide");
+const { router: eventsRouter } = require("./models/events");
 
-const { router: eventsRouter } = require('./models/events');
-app.use('/events', eventsRouter);
+app.use("/events", eventsRouter);
 
 // Create a route for root - /
-app.get("/", function(req, res) {
+app.get("/", function (req, res) {
     res.send("Hello world!");
 });
 
-// Create a route for root - /guides
-app.get("/guides", async function(req, res) {
-    const search = req.query.search || "";
-    const skillLevel = req.query.skillLevel || "All";
-    const genre = req.query.genre || "All";
-    const guides = await Guide.getFilteredGuides(search, skillLevel, genre);
-    res.render("guides", {
-        guides: guides,
-        search: search,
-        skillLevel: skillLevel,
-        genre: genre
-    });
+// Create a route for /guides
+app.get("/guides", async function (req, res) {
+    try {
+        const search = req.query.search || "";
+        const skillLevel = req.query.skillLevel || "All";
+        const genre = req.query.genre || "All";
+
+        const guides = await Guide.getFilteredGuides(search, skillLevel, genre);
+
+        res.render("guides", {
+            guides: guides,
+            search: search,
+            skillLevel: skillLevel,
+            genre: genre
+        });
+    } catch (err) {
+        console.error("Error loading guides:", err);
+        res.status(500).send("Failed to load guides.");
+    }
 });
 
+// Create a route for /guide-details/:id
+app.get("/guide-details/:id", async function (req, res) {
+    try {
+        const gId = req.params.id;
+        const guide = new Guide(gId);
 
-// Create a route for root - /guide details
-app.get("/guide-details/:id", async function(req, res) {
-    var gId = req.params.id;
-    var guide = new Guide(gId);
-    await guide.getGuideDetails();
-    await guide.getComments();
-    res.render("guide-details", { guide: guide });
+        await guide.getGuideDetails();
+        await guide.getComments();
+
+        res.render("guide-details", { guide: guide });
+    } catch (err) {
+        console.error("Error loading guide details:", err);
+        res.status(500).send("Failed to load guide details.");
+    }
 });
 
+// Create a route for /profile
 app.get("/profile", async function (req, res) {
     try {
         const userId = 101;
@@ -59,6 +73,10 @@ app.get("/profile", async function (req, res) {
             FROM users
             WHERE userID = ?
         `, [userId]);
+
+        if (!userRows || userRows.length === 0) {
+            return res.status(404).send("User not found.");
+        }
 
         // 2. Stats
         const createdRows = await db.query(`
@@ -73,7 +91,7 @@ app.get("/profile", async function (req, res) {
             WHERE userID = ?
         `, [userId]);
 
-        // 3. Tips
+        // 3. Tips created by user
         const tipsRows = await db.query(`
             SELECT GID, title, content, Genre, Skill_level, created_at
             FROM guides
@@ -81,14 +99,31 @@ app.get("/profile", async function (req, res) {
             ORDER BY created_at DESC
         `, [userId]);
 
+        // 4. Events
+        const upcomingEventRows = await db.query(`
+            SELECT Event_Name, date, Skill_level, status
+            FROM Events
+            WHERE userID = ? AND status = 'upcoming'
+            ORDER BY date ASC
+        `, [userId]);
+
+        const completedEventRows = await db.query(`
+            SELECT Event_Name, date, Skill_level, status
+            FROM Events
+            WHERE userID = ? AND status = 'completed'
+            ORDER BY date DESC
+        `, [userId]);
+
         const user = {
-            username: userRows[0]?.username || "Unknown User",
+            username: userRows[0].username || "Unknown User",
             email: "username@email.com",
-            bio: userRows[0]?.bio || "No bio yet",
-            joined: userRows[0]?.joined || "Unknown",
-            favouriteGame: userRows[0]?.favouriteGame || "Unknown",
-            skillLevel: userRows[0]?.skillLevel || "Unknown",
-            platform: userRows[0]?.platform || "Unknown"
+            bio: userRows[0].bio || "No bio yet",
+            joined: userRows[0].joined
+                ? new Date(userRows[0].joined).toLocaleDateString("en-GB")
+                : "Unknown",
+            favouriteGame: userRows[0].favouriteGame || "Unknown",
+            skillLevel: userRows[0].skillLevel || "Unknown",
+            platform: userRows[0].platform || "Unknown"
         };
 
         const stats = {
@@ -97,75 +132,116 @@ app.get("/profile", async function (req, res) {
             tipsLiked: likedRows[0]?.tipsLiked || 0
         };
 
-        const formattedTips = tipsRows.map(tip => ({
-            title: tip.title,
+        const formattedTips = tipsRows.map((tip) => ({
+            title: tip.title || "Untitled Tip",
             game: tip.Genre || "Unknown",
             date: tip.created_at
-                ? new Date(userRows[0].joined).toLocaleDateString("en-GB")
+                ? new Date(tip.created_at).toLocaleDateString("en-GB")
                 : "No date",
             summary: tip.content
                 ? tip.content.substring(0, 120) + (tip.content.length > 120 ? "..." : "")
                 : "No summary available"
         }));
 
+        const upcomingEvents = upcomingEventRows.map((event) => ({
+            name: event.Event_Name || "Untitled Event",
+            date: event.date
+                ? new Date(event.date).toLocaleDateString("en-GB")
+                : "No date",
+            skillLevel: event.Skill_level || "Unknown",
+            status: event.status || "Unknown"
+        }));
+
+        const completedEvents = completedEventRows.map((event) => ({
+            name: event.Event_Name || "Untitled Event",
+            date: event.date
+                ? new Date(event.date).toLocaleDateString("en-GB")
+                : "No date",
+            skillLevel: event.Skill_level || "Unknown",
+            status: event.status || "Unknown"
+        }));
+
+        // Activity boxes based on real profile data
+        const activityData = [
+            stats.tipsCreated,
+            stats.tipsLiked,
+            upcomingEvents.length,
+            completedEvents.length,
+            formattedTips.length > 0 ? 1 : 0,
+            user.bio && user.bio !== "No bio yet" ? 1 : 0,
+            user.favouriteGame !== "Unknown" ? 1 : 0,
+            user.platform !== "Unknown" ? 1 : 0
+        ];
+
+        const maxActivity = Math.max(...activityData, 1);
+
+        const activityBoxes = activityData.map((value) => {
+            const level = Math.max(1, Math.ceil((value / maxActivity) * 4));
+            return {
+                value,
+                level
+            };
+        });
+
         res.render("profile", {
             user,
             stats,
-            tips: formattedTips
+            tips: formattedTips,
+            upcomingEvents,
+            completedEvents,
+            activityBoxes
         });
-
     } catch (err) {
-        console.error(err);
-        res.status(500).send(err.message);
+        console.error("Error loading profile page:", err);
+        res.status(500).send("Failed to load profile page.");
     }
 });
-// Create a route for root - /about
+
+// Create a route for /about
 app.get("/about", function (req, res) {
     res.render("about");
 });
 
-// Create a route for root - /index
+// Create a route for /index
 app.get("/index", function (req, res) {
     res.render("index");
 });
 
-app.get("/cw-users", async function(req, res) {
+app.get("/cw-users", async function (req, res) {
     try {
-        const users = await db2.query('SELECT * FROM users');
+        const users = await db2.query("SELECT * FROM users");
         res.json(users);
     } catch (err) {
+        console.error("Error loading cw-users:", err);
         res.status(500).send(err.message);
     }
 });
 
 // Create a route for testing the db
-app.get("/db_test", function(req, res) {
-    // Assumes a table called test_table exists in your database
-    sql = 'select * from test_table';
-    db.query(sql).then(results => {
+app.get("/db_test", function (req, res) {
+    const sql = "SELECT * FROM test_table";
+
+    db.query(sql).then((results) => {
         console.log(results);
-        res.send(results)
+        res.send(results);
+    }).catch((err) => {
+        console.error("Database test failed:", err);
+        res.status(500).send(err.message);
     });
 });
 
 // Create a route for /goodbye
-// Responds to a 'GET' request
-app.get("/goodbye", function(req, res) {
+app.get("/goodbye", function (req, res) {
     res.send("Goodbye world!");
 });
 
-// Create a dynamic route for /hello/<name>, where name is any value provided by user
-// At the end of the URL
-// Responds to a 'GET' request
-app.get("/hello/:name", function(req, res) {
-    // req.params contains any parameters in the request
-    // We can examine it in the console for debugging purposes
+// Create a dynamic route for /hello/:name
+app.get("/hello/:name", function (req, res) {
     console.log(req.params);
-    //  Retrieve the 'name' parameter and use it in a dynamically generated page
     res.send("Hello " + req.params.name);
 });
 
 // Start server on port 3000
-app.listen(3000,function(){
-    console.log(`Server running at http://127.0.0.1:3000/`);
+app.listen(3000, function () {
+    console.log("Server running at http://127.0.0.1:3000/");
 });
