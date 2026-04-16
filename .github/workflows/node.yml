@@ -28,11 +28,14 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Check app entry file
-        run: test -f app/app.js
+      - name: Check root app file
+        run: test -f app.js
+
+      - name: Check sprint app entry file
+        run: test -f docs/pg-sd2/app/app.js
 
       - name: Check profile view exists
-        run: test -f app/views/profile.pug
+        run: test -f docs/pg-sd2/app/views/profile.pug
 
       - name: Check profile stylesheet exists
-        run: test -f static/style/profile.css
+        run: test -f docs/pg-sd2/static/style/profile.css
