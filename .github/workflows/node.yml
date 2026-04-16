@@ -1,0 +1,41 @@
+name: Node CI
+
+on:
+  push:
+    branches:
+      - main
+      - pakize-profile-fix
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  basic-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Show Node version
+        run: node -v
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Check root app file
+        run: test -f app.js
+
+      - name: Check sprint app entry file
+        run: test -f docs/pg-sd2/app/app.js
+
+      - name: Check profile view exists
+        run: test -f docs/pg-sd2/app/views/profile.pug
+
+      - name: Check profile stylesheet exists
+        run: test -f docs/pg-sd2/static/style/profile.css
