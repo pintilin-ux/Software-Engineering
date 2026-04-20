@@ -197,6 +197,28 @@ app.get("/profile", async function (req, res) {
     }
 });
 
+// Create a route for /videos AND API
+app.get("/videos", async function(req, res) {
+    const search = req.query.search || "";
+    let videos = [];
+
+    if (search.trim() !== "") {
+        const apiKey = process.env.YOUTUBE_API_KEY;
+        const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(search)}&type=video&maxResults=6&key=${apiKey}`;
+        
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        videos = data.items.map(item => ({
+            videoId: item.id.videoId,
+            title: item.snippet.title
+        }));
+    }
+
+    res.render("videos", { videos, search });
+});
+
+
 // Create a route for /about
 app.get("/about", function (req, res) {
     res.render("about");
@@ -230,16 +252,7 @@ app.get("/db_test", function (req, res) {
     });
 });
 
-// Create a route for /goodbye
-app.get("/goodbye", function (req, res) {
-    res.send("Goodbye world!");
-});
 
-// Create a dynamic route for /hello/:name
-app.get("/hello/:name", function (req, res) {
-    console.log(req.params);
-    res.send("Hello " + req.params.name);
-});
 
 // Start server on port 3000
 app.listen(3000, function () {
