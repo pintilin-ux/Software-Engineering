@@ -1,13 +1,12 @@
-/* ── Main container ── */
 .container {
-  width: min(95%, 1400px);
+  width: 100%;
+  max-width: 1200px;
   margin: 20px auto 40px;
-  padding: 0 20px;
+  padding: 0 24px;
+  box-sizing: border-box;
 }
 
-/* Make sections take full width */
 .search-bar,
-.game-selection,
 .featured,
 .video-grid {
   width: 100%;
@@ -24,21 +23,21 @@
   display: flex;
   gap: 10px;
   width: 100%;
-  max-width: 600px;
+  max-width: 700px;
 }
 
 .search-bar input {
   flex: 1;
-  padding: 10px 14px;
+  padding: 12px 16px;
   border-radius: 6px;
   border: 1px solid rgba(255,255,255,0.2);
   background: rgba(255,255,255,0.05);
   color: #fff;
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .search-bar button {
-  padding: 10px 20px;
+  padding: 12px 24px;
   background: #2f67ff;
   color: #fff;
   border: none;
@@ -51,53 +50,36 @@
   background: #1f57ef;
 }
 
-/* ── Game Selection ── */
-.game-selection {
-  margin-top: 25px;
-}
-
-.game-selection h3 {
-  font-size: 24px;
-  margin-bottom: 10px;
-}
-
-.game-dropdown {
-  width: 240px;
-  height: 34px;
-  border: 1px solid #3A4567;
-  border-radius: 4px;
-  font-size: 14px;
-  color: #8b7b7b;
-  padding: 4px 8px;
-}
-
-/* ── Featured / Carousel ── */
+/* ── Featured ── */
 .featured {
-  margin-top: 28px;
+  margin-top: 30px;
   border: 1px solid #3A4567;
   border-radius: 8px;
-  padding: 20px;
+  padding: 25px;
   background: #0B1D51;
+  box-sizing: border-box; /* ✅ FIX */
 }
 
 .featured-title {
   text-align: center;
-  font-size: 30px;
-  margin-bottom: 18px;
+  font-size: 32px;
+  margin-bottom: 20px;
+  color: #fff;
 }
 
 .carousel {
-  position: relative;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
 }
 
 .carousel-track {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  width: 100%;
+  flex: 1;
+  max-width: 860px;
+  overflow: hidden;
 }
 
 .carousel-slide {
@@ -107,29 +89,48 @@
 
 .carousel-slide.active {
   display: flex;
-  gap: 12px;
+  flex-direction: row;
   justify-content: center;
-  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 20px;
 }
 
 .carousel-item {
+  width: 260px;
+  flex-shrink: 0;
   text-align: center;
-  font-size: 12px;
   color: #aab4d4;
-  width: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.carousel-item iframe {
+  width: 260px;
+  height: 150px;
+  border-radius: 6px;
+  display: block;
 }
 
 .carousel-item p {
   font-size: 14px;
   margin-top: 8px;
+  height: 40px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #aab4d4;
 }
 
-/* ── Carousel dots ── */
+/* ── Dots ── */
 .carousel-dots {
   display: flex;
   justify-content: center;
   gap: 8px;
-  margin-top: 12px;
+  margin-top: 14px;
+  padding: 0 54px;
 }
 
 .dot {
@@ -137,7 +138,6 @@
   height: 10px;
   background: rgba(255,255,255,0.3);
   border-radius: 50%;
-  display: inline-block;
   cursor: pointer;
 }
 
@@ -147,40 +147,35 @@
 
 /* ── Carousel buttons ── */
 .carousel-btn {
-  position: absolute;
-  top: 42%;
+  flex-shrink: 0;
+  width: 44px;
   background: #2563EB;
   color: white;
   border: none;
-  padding: 8px 13px;
-  font-size: 15px;
+  padding: 8px 0;
+  font-size: 16px;
   cursor: pointer;
-  border-radius: 5px;
-  z-index: 10;
+  border-radius: 6px;
+  text-align: center;
 }
 
 .carousel-btn:hover {
   background: #1E40A4;
 }
 
-.carousel-btn.prev {
-  left: 0px;
-}
-
-.carousel-btn.next {
-  right: 0px;
-}
-
 /* ── Video Grid ── */
 .video-grid {
-  padding: 16px;
+  padding: 20px;
   background: #0B1D51;
   border: 1px solid #3A4567;
   border-radius: 8px;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
-  margin-top: 28px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  margin-top: 30px;
+  min-height: 120px;
+  align-items: center;
+  box-sizing: border-box; /* ✅ FIX */
 }
 
 .video-card {
@@ -193,14 +188,13 @@
   background: rgba(255,255,255,0.02);
 }
 
-.video-card iframe,
-.video-card video {
+.video-card iframe {
   border-radius: 4px;
   display: block;
   width: 100%;
+  height: 180px;
 }
 
-/* ── No results ── */
 .no-results {
   color: #aab4d4;
   text-align: center;
