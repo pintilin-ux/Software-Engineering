@@ -19,7 +19,7 @@ app.use(session({
 }));
 
 app.use((req,res,next) => {
-    res.locals.isLoggedIn = !!req.session.userId;
+    res.locals.Logged = !!req.session.userId;
     next();
 });
 

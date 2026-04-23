@@ -24,9 +24,9 @@ html
             li: a(href="/videos") Videos
             li: a(href="/events") Events
             li: a(href="/about") About Us
-          if isLoggedIn
+          if Logged
             li: a(href="/profile") Profile
-          if isLoggedIn
+          if Logged
             a.header-btn(href="/logout") Logout
           else
             a.header-btn(href="/Login") Login
@@ -44,7 +44,7 @@ html
             a(href='/videos') Videos
             a(href='/about') About Us
             a(href='/events') Events
-          if isLoggedIn
+          if Logged
             a(href='/profile') Profile
           .footer-social
             a.social-btn(href='#' aria-label='Instagram')
