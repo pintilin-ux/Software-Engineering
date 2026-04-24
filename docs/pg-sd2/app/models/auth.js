@@ -16,7 +16,7 @@ router.post("/login", async (req, res) => {
 
     try {
         const rows = await db.query(
-            "SELECT userID, passwordHash FROM users WHERE username = ?",
+            "SELECT userID, password_hash FROM users WHERE username = ?",
             [username]
         );
 
@@ -27,7 +27,7 @@ router.post("/login", async (req, res) => {
         const user = rows[0];
 
         // ✅ TEMP TEST (NO BCRYPT YET)
-        const valid = password === user.passwordHash;
+        const valid = password === user.password_hash;
 
         if (!valid) {
             return res.redirect("/login?error=1");
