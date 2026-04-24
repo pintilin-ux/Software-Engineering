@@ -18,15 +18,22 @@ router.post("/login", async (req, res) => {
         );
 
         if (!rows.length) {
-            return res.status(401).send("Invalid login");
+            return res.redirect("/login?error=1");
         }
 
         const user = rows[0];
 
-        const valid = await bcrypt.compare(password, user.passwordHash);
+        // ✅ HERE is your test logic
+        let valid = false;
+
+        if (user.passwordHash.startsWith("$2a$")) {
+            valid = await bcrypt.compare(password, user.passwordHash);
+        } else {
+            valid = password === user.passwordHash;
+        }
 
         if (!valid) {
-            return res.status(401).send("Invalid login");
+            return res.redirect("/login?error=1");
         }
 
         req.session.userId = user.userID;
