@@ -1,8 +1,28 @@
 // Import express.js
 const express = require("express");
+const session = require("express-session");
+const bcrypt = require ("bcryptjs");
 
 // Create express app
 const app = express();
+
+app.use(express.urlencoded({ extended: true}));
+
+app.use(session({
+    secret: process.env.SESSION_SECRET || "dev-secret",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        httpOnly: true,
+        secure: false
+    }
+}));
+
+app.use((req,res,next) => {
+    res.locals.Logged = !!req.session.userId;
+    next();
+});
+
 
 // Add static files location
 app.use(express.static("static"));
@@ -17,8 +37,12 @@ const db2 = require("./services/db2");
 
 const { Guide } = require("./models/guide");
 const { router: eventsRouter } = require("./models/events");
+const authRoutes = require("./models/auth");
+
 
 app.use("/events", eventsRouter);
+
+app.use("/", authRoutes);
 
 // Create a route for root - /
 app.get("/", function (req, res) {
@@ -65,7 +89,11 @@ app.get("/guide-details/:id", async function (req, res) {
 // Create a route for /profile
 app.get("/profile", async function (req, res) {
     try {
-        const userId = 101;
+        const userId = req.session.userId;
+
+        if(!userId){
+            return res.redirect("/login");
+        }
 
         // 1. User info
         const userRows = await db.query(`
@@ -197,6 +225,28 @@ app.get("/profile", async function (req, res) {
     }
 });
 
+// Create a route for /videos AND API
+app.get("/videos", async function(req, res) {
+    const search = req.query.search || "";
+    let videos = [];
+
+    if (search.trim() !== "") {
+        const apiKey = process.env.YOUTUBE_API_KEY;
+        const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(search)}&type=video&maxResults=6&key=${apiKey}`;
+        
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        videos = data.items.map(item => ({
+            videoId: item.id.videoId,
+            title: item.snippet.title
+        }));
+    }
+
+    res.render("videos", { videos, search });
+});
+
+
 // Create a route for /about
 app.get("/about", function (req, res) {
     res.render("about");
@@ -232,17 +282,6 @@ app.get("/db_test", function (req, res) {
         console.error("Database test failed:", err);
         res.status(500).send(err.message);
     });
-});
-
-// Create a route for /goodbye
-app.get("/goodbye", function (req, res) {
-    res.send("Goodbye world!");
-});
-
-// Create a dynamic route for /hello/:name
-app.get("/hello/:name", function (req, res) {
-    console.log(req.params);
-    res.send("Hello " + req.params.name);
 });
 
 // Start server on port 3000

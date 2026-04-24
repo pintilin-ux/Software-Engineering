@@ -4,89 +4,78 @@ block styles
   link(rel="stylesheet", href="/style/videos.css")
 
 block content
-    .container
+  .container
 
-      section.game-selection
-        h3 Game Selection
-        select.game-dropdown
-          option Silk Song
-          option Valorant
-          option Fortnite
+    section.search-bar
+      form(action="/videos" method="GET")
+        input(type="text" name="search" placeholder="Search YouTube..." value=search)
+        button(type="submit") Search
 
-      section.featured
-        h2.featured-title Top Videos This week
-        .carousel
-          button.carousel-btn.prev &#8592;
-          .carousel-track
-            .carousel-slide.active
-              .carousel-item
-                iframe(width="320" height="180" src="https://www.youtube.com/embed/MDWPM8RefIc" frameborder="0" allowfullscreen)
-                p How to smoke...
-              .carousel-item
-                iframe(width="320" height="180" src="https://www.youtube.com/embed/VA8_91BABoc" frameborder="0" allowfullscreen)
-                p How to Aim train...
-              .carousel-item
-                iframe(width="320" height="180" src="https://www.youtube.com/embed/K4Zoq1Yk-dM" frameborder="0" allowfullscreen)
-                p How to molly...
-            .carousel-slide
-              .carousel-item
-                iframe(width="320" height="180" src="https://www.youtube.com/embed/tAF6uAY8KQc" frameborder="0" allowfullscreen)
-                p How to smoke...
-              .carousel-item
-                iframe(width="320" height="180" src="https://www.youtube.com/embed/JuzXsaf-QuY" frameborder="0" allowfullscreen)
-                p How to Aim train...
-              .carousel-item
-                iframe(width="320" height="180" src="https://www.youtube.com/embed/j_18b15jalE" frameborder="0" allowfullscreen)
-                p How to molly...
-            .carousel-slide
-              .carousel-item
-                iframe(width="320" height="180" src="https://www.youtube.com/embed/yNaW4SEbzGU" frameborder="0" allowfullscreen)
-                p How to smoke...
-              .carousel-item
-                iframe(width="320" height="180" src="https://www.youtube.com/embed/JuzXsaf-QuY" frameborder="0" allowfullscreen)
-                p How to Aim train...
-              .carousel-item
-                iframe(width="320" height="180" src="https://www.youtube.com/embed/j_18b15jalE" frameborder="0" allowfullscreen)
-                p How to molly...
-          button.carousel-btn.next &#8594;
-          .carousel-dots
-            span.dot.active
-            span.dot
-            span.dot
+    section.featured
+      h2.featured-title Top Videos This week
+      .carousel
+        button.carousel-btn.prev &#8592;
+        .carousel-track
+          .carousel-slide.active
+            .carousel-item
+              iframe(width="260" height="150" src="https://www.youtube.com/embed/MDWPM8RefIc" frameborder="0" allowfullscreen)
+              p How to smoke...
+            .carousel-item
+              iframe(width="260" height="150" src="https://www.youtube.com/embed/VA8_91BABoc" frameborder="0" allowfullscreen)
+              p How to Aim train...
+            .carousel-item
+              iframe(width="260" height="150" src="https://www.youtube.com/embed/K4Zoq1Yk-dM" frameborder="0" allowfullscreen)
+              p How to molly...
+          .carousel-slide
+            .carousel-item
+              iframe(width="260" height="150" src="https://www.youtube.com/embed/tAF6uAY8KQc" frameborder="0" allowfullscreen)
+              p How to smoke...
+            .carousel-item
+              iframe(width="260" height="150" src="https://www.youtube.com/embed/JuzXsaf-QuY" frameborder="0" allowfullscreen)
+              p How to Aim train...
+            .carousel-item
+              iframe(width="260" height="150" src="https://www.youtube.com/embed/j_18b15jalE" frameborder="0" allowfullscreen)
+              p How to molly...
+          .carousel-slide
+            .carousel-item
+              iframe(width="260" height="150" src="https://www.youtube.com/embed/yNaW4SEbzGU" frameborder="0" allowfullscreen)
+              p How to smoke...
+            .carousel-item
+              iframe(width="260" height="150" src="https://www.youtube.com/embed/JuzXsaf-QuY" frameborder="0" allowfullscreen)
+              p How to Aim train...
+            .carousel-item
+              iframe(width="260" height="150" src="https://www.youtube.com/embed/j_18b15jalE" frameborder="0" allowfullscreen)
+              p How to molly...
+        button.carousel-btn.next &#8594;
+      .carousel-dots
+        span.dot.active
+        span.dot
+        span.dot
 
-      section.video-grid
-        .video-card
-          iframe(width="100%" height="180" src="https://www.youtube.com/embed/tAF6uAY8KQc" frameborder="0" allowfullscreen)
-          p Video #1
-        .video-card
-          iframe(width="100%" height="180" src="https://www.youtube.com/embed/KeeJUSY9B4M" frameborder="0" allowfullscreen)
-          p Video #2
-        .video-card
-          iframe(width="100%" height="180" src="https://www.youtube.com/embed/inQYYX7h3N8" frameborder="0" allowfullscreen)
-          p Video #3
-        .video-card
-          iframe(width="100%" height="180" src="https://www.youtube.com/embed/8yPLauRLeyI" frameborder="0" allowfullscreen)
-          p Video #4
-        .video-card
-          iframe(width="100%" height="180" src="https://www.youtube.com/embed/EaGJ916LyZo" frameborder="0" allowfullscreen)
-          p Video #5
-        .video-card
-          iframe(width="100%" height="180" src="https://www.youtube.com/embed/fVxK-2j3kwU" frameborder="0" allowfullscreen)
-          p Video #6
+    section.video-grid
+      if videos && videos.length > 0
+        each video in videos
+          .video-card
+            iframe(width="100%" height="180" src=`https://www.youtube.com/embed/${video.videoId}` frameborder="0" allowfullscreen)
+            p= video.title
+      else if search
+        p.no-results No videos found for "#{search}"
+      else
+        p.no-results Search for something above to see videos here
 
-    script.
-      const slides = document.querySelectorAll('.carousel-slide');
-      const dots = document.querySelectorAll('.dot');
-      let current = 0;
+  script.
+    const slides = document.querySelectorAll('.carousel-slide');
+    const dots = document.querySelectorAll('.dot');
+    let current = 0;
 
-      function goToSlide(n) {
-        slides[current].classList.remove('active');
-        dots[current].classList.remove('active');
-        current = (n + slides.length) % slides.length;
-        slides[current].classList.add('active');
-        dots[current].classList.add('active');
-      }
+    function goToSlide(n) {
+      slides[current].classList.remove('active');
+      dots[current].classList.remove('active');
+      current = (n + slides.length) % slides.length;
+      slides[current].classList.add('active');
+      dots[current].classList.add('active');
+    }
 
-      document.querySelector('.prev').addEventListener('click', () => goToSlide(current - 1));
-      document.querySelector('.next').addEventListener('click', () => goToSlide(current + 1));
-      dots.forEach((dot, i) => dot.addEventListener('click', () => goToSlide(i)));
+    document.querySelector('.prev').addEventListener('click', () => goToSlide(current - 1));
+    document.querySelector('.next').addEventListener('click', () => goToSlide(current + 1));
+    dots.forEach((dot, i) => dot.addEventListener('click', () => goToSlide(i)));
