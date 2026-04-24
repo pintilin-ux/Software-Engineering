@@ -24,8 +24,8 @@ html
             li: a(href="/videos") Videos
             li: a(href="/events") Events
             li: a(href="/about") About Us
-          if Logged
-            li: a(href="/profile") Profile
+            if Logged
+              li: a(href="/profile") Profile
           if Logged
             a.header-btn(href="/logout") Logout
           else
