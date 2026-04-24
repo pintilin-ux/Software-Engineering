@@ -1,10 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
-const db = require("../services/db");
+const db = require("../services/db2");
 
+// 🔹 GET login page
 router.get("/login", (req, res) => {
-    res.render("login");
+    res.render("login", {
+        error: req.query.error
+    });
 });
 
 
@@ -13,7 +16,7 @@ router.post("/login", async (req, res) => {
 
     try {
         const rows = await db.query(
-            "SELECT userID, passwordHash FROM users WHERE username = ?",
+            "SELECT userID, password_hash FROM users WHERE username = ?",
             [username]
         );
 
@@ -23,14 +26,8 @@ router.post("/login", async (req, res) => {
 
         const user = rows[0];
 
-        // ✅ HERE is your test logic
-        let valid = false;
-
-        if (user.passwordHash.startsWith("$2a$")) {
-            valid = await bcrypt.compare(password, user.passwordHash);
-        } else {
-            valid = password === user.passwordHash;
-        }
+        // ✅ TEMP TEST (NO BCRYPT YET)
+        const valid = password === user.password_hash;
 
         if (!valid) {
             return res.redirect("/login?error=1");
@@ -47,9 +44,10 @@ router.post("/login", async (req, res) => {
 });
 
 
+// 🔹 Logout
 router.get("/logout", (req, res) => {
     req.session.destroy(() => {
-        res.redirect("/");
+        res.redirect("/index");
     });
 });
 
