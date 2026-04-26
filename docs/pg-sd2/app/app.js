@@ -57,6 +57,12 @@ app.get("/guides", async function (req, res) {
         const genre = req.query.genre || "All";
 
         const guides = await Guide.getFilteredGuides(search, skillLevel, genre);
+        const userId = req.session.userId;
+
+        for (let guide of guides) {
+            await guide.getLikes();
+            guide.likedByUser = await guide.hasUserLiked(userId);
+        }
 
         res.render("guides", {
             guides: guides,
@@ -75,14 +81,73 @@ app.get("/guide-details/:id", async function (req, res) {
     try {
         const gId = req.params.id;
         const guide = new Guide(gId);
+        const userId = req.session.userId;
 
         await guide.getGuideDetails();
         await guide.getComments();
+        await guide.getLikes();
+        guide.likedByUser = await guide.hasUserLiked(userId);
 
         res.render("guide-details", { guide: guide });
     } catch (err) {
         console.error("Error loading guide details:", err);
         res.status(500).send("Failed to load guide details.");
+    }
+});
+
+app.post("/like/:gid", async function (req, res) {
+    const userId = req.session.userId;
+    const gid = req.params.gid;
+
+    if (!userId) {
+        return res.status(401).json({ error: "Login required" });
+    }
+
+    const check = await db2.query(
+        "SELECT * FROM likes WHERE userID = ? AND GID = ?",
+        [userId, gid]
+    );
+
+    if (check.length > 0) {
+        // UNLIKE
+        await db2.query(
+            "DELETE FROM likes WHERE userID = ? AND GID = ?",
+            [userId, gid]
+        );
+        res.json({ liked: false });
+    } else {
+        // LIKE
+        await db2.query(
+            "INSERT INTO likes (userID, GID) VALUES (?, ?)",
+            [userId, gid]
+        );
+        res.json({ liked: true });
+    }
+});
+
+app.post("/guide-details/:id/comment", async (req, res) => {
+    const userId = req.session.userId;
+    const gid = req.params.id;
+    const { comment } = req.body;
+
+    if (!userId) {
+        return res.status(401).send("Login required");
+    }
+
+    if (!comment || comment.trim() === "") {
+        return res.redirect(`/guide-details/${gid}`);
+    }
+
+    try {
+        await db2.query(
+            "INSERT INTO comments (userID, GID, comment, created_at) VALUES (?, ?, ?, NOW())",
+            [userId, gid, comment]
+        );
+
+        res.redirect(`/guide-details/${gid}`);
+    } catch (err) {
+        console.error("COMMENT ERROR:", err);
+        res.status(500).send("Error adding comment");
     }
 });
 

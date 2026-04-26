@@ -231,6 +231,17 @@
     max-width:380px;
 }
 
+.comments-form {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+.comments-form button{
+    margin: 0;
+}
+
 .guide-detail-comments-box h2{
     font-size:32px;
     margin-bottom:20px;
@@ -242,14 +253,16 @@
     padding:26px;
 }
 
+.guide-detail-comments-box p{
+    color: #b5b5b5;
+}
+
 .guide-detail-input{
-    width: 90%;
     background:transparent;
     border:1px solid #3A4567;
     color:white;
     padding:14px 16px;
     font-size:16px;
-    margin-bottom:24px;
     outline:none;
 }
 
@@ -258,8 +271,8 @@
 }
 
 .guide-detail-comment{
+    border:1px solid #3A4567;
     display:flex;
-    gap:16px;
     margin-bottom:26px;
 }
 
@@ -268,7 +281,7 @@
 }
 
 .guide-detail-avatar{
-    margin: auto 0;
+    margin: auto 15px;
     min-width:60px;
     height:60px;
     border-radius:50%;
@@ -283,6 +296,7 @@
 }
 
 .guide-detail-comment-body p{
+    color: #FFFFFF;
     font-size:14px;
     line-height:1.4;
 }

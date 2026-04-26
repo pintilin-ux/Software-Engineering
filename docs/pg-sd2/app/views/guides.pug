@@ -4,55 +4,90 @@ block styles
   link(rel="stylesheet", href="/style/guides.css")
 
 block content
-    .container
+  .container
 
-      // FILTER SIDEBAR
-      aside.filters
-        h2 Filters
-        form(method="GET", action="/guides")
-          input(type="hidden" name="search" value=search)
+    // FILTER SIDEBAR
+    aside.filters
+      h2 Filters
+      form(method="GET", action="/guides")
+        input(type="hidden" name="search" value=search)
 
-          label(for="skillLevel") Skill level
-          select(name="skillLevel" id="skillLevel")
-            option(value="All" selected=skillLevel === "All") All
-            option(value="Beginner" selected=skillLevel === "Beginner") Beginner
-            option(value="Intermediate" selected=skillLevel === "Intermediate") Intermediate
-            option(value="Advanced" selected=skillLevel === "Advanced") Advanced
+        label(for="skillLevel") Skill level
+        select(name="skillLevel" id="skillLevel")
+          option(value="All" selected=skillLevel === "All") All
+          option(value="Beginner" selected=skillLevel === "Beginner") Beginner
+          option(value="Intermediate" selected=skillLevel === "Intermediate") Intermediate
+          option(value="Advanced" selected=skillLevel === "Advanced") Advanced
 
-          label(for="genre") Genre
-          select(name="genre" id="genre")
-            option(value="All" selected=genre === "All") All
-            option(value="Strategy" selected=genre === "Strategy") Strategy
-            option(value="Cooking" selected=genre === "Cooking") Cooking
-            option(value="Programming" selected=genre === "Programming") Programming
-            option(value="Gaming" selected=genre === "Gaming") Gaming
+        label(for="genre") Genre
+        select(name="genre" id="genre")
+          option(value="All" selected=genre === "All") All
+          option(value="Strategy" selected=genre === "Strategy") Strategy
+          option(value="Cooking" selected=genre === "Cooking") Cooking
+          option(value="Programming" selected=genre === "Programming") Programming
+          option(value="Gaming" selected=genre === "Gaming") Gaming
 
-          button.btn(type="submit") Filter
-          a.btn(href="/guides") Reset
+        button.btn(type="submit") Filter
+        a.btn(href="/guides") Reset
 
-      // GUIDES SECTION
-      section.guides
+    // GUIDES SECTION
+    section.guides
 
-        h1 Guides
-        form.search-form(method="GET", action="/guides")
-          input(type="hidden" name="skillLevel" value=skillLevel)
-          input(type="hidden" name="genre" value=genre)
-          .search-wrapper
-            input(type="text" name="search" placeholder="Search..." value=search)
-            button(type="submit")
-              img(src="/images/search-icon.svg", alt="Search")
+      h1 Guides
 
-        .guides-grid
-          each guide in guides
-            .guide-card
-              .guide-info-wrap 
-                p.guide-card-title= guide.title
-                .likes-container 
-                  img(src="/images/Like_icon.svg")
-                  p.like-number 5
-              .guide-card-tags
-                span.tag.tag--skill= guide.skillLevel
-                span.tag.tag--category= guide.genre
-              p.guide-content= guide.getShortContent()
-              a.btn(href="/guide-details/" + guide.id) Read Guide
-              
+      form.search-form(method="GET", action="/guides")
+        input(type="hidden" name="skillLevel" value=skillLevel)
+        input(type="hidden" name="genre" value=genre)
+        .search-wrapper
+          input(type="text" name="search" placeholder="Search..." value=search)
+          button(type="submit")
+            img(src="/images/search-icon.svg", alt="Search")
+
+      .guides-grid
+        each guide in guides
+          .guide-card
+            .guide-info-wrap 
+              p.guide-card-title= guide.title
+              .likes-container(data-id=guide.id)
+                img.like-btn(
+                  src=guide.likedByUser ? "/images/Like_icon.svg" : "/images/Unlike_icon.svg"
+                )
+                p.like-number= guide.likes
+
+            .guide-card-tags
+              span.tag.tag--skill= guide.skillLevel
+              span.tag.tag--category= guide.genre
+
+            p.guide-content= guide.getShortContent()
+            a.btn(href="/guide-details/" + guide.id) Read Guide
+
+  script.
+    document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll(".likes-container").forEach(container => {
+            const btn = container.querySelector(".like-btn");
+            const countLikes = container.querySelector(".like-number");
+            const gid = container.dataset.id;
+
+            btn.addEventListener("click", async () => {
+                const res = await fetch(`/like/${gid}`, { method: "POST" });
+
+                if (res.status === 401) {
+                    alert("Login required");
+                    return;
+                }
+
+                const data = await res.json();
+                let count = parseInt(countLikes.textContent);
+
+                if (data.liked) {
+                    count++;
+                    btn.src = "/images/Like_icon.svg";
+                } else {
+                    count--;
+                    btn.src = "/images/Unlike_icon.svg";
+                }
+
+                countLikes.textContent = count;
+            });
+        });
+    });

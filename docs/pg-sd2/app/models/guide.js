@@ -41,6 +41,7 @@ class Guide {
             FROM comments c 
             JOIN users u ON c.userID = u.userID 
             WHERE c.GID = ?
+            ORDER BY c.created_at DESC
         `;
         const results = await db2.query(sql, [this.id]);
         this.comments = results; // store ALL comments
@@ -91,10 +92,27 @@ class Guide {
             guide.genre = row.Genre;
             guide.skillLevel = row.Skill_level;
             guide.createdAt = row.created_at;
+            guide.likes = 0;
+            guide.likedByUser = false;
 
             guides.push(guide);
         }
         return guides;
+    }
+
+    async getLikes() {
+        const sql = "SELECT COUNT(*) AS total FROM likes WHERE GID = ?";
+        const result = await db2.query(sql, [this.id]);
+        this.likes = result[0].total;
+    }
+    
+    async hasUserLiked(userId) {
+        if (!userId) return false;
+    
+        const sql = "SELECT * FROM likes WHERE userID = ? AND GID = ?";
+        const result = await db2.query(sql, [userId, this.id]);
+    
+        return result.length > 0;
     }
 }
 

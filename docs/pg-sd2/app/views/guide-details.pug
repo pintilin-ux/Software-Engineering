@@ -4,35 +4,78 @@ block styles
   link(rel="stylesheet", href="/style/guides.css")
 
 block content
-   .guide-detail-page
-      .guide-detail-back
-        a(href="/guides") ← Guides
+  .guide-detail-page
+    .guide-detail-back
+      a(href="/guides") ← Guides
 
-      .guide-detail-header
-            h1=guide.title
-            .likes-container 
-                img(src="/images/Like_icon.svg")
-                p.like-number 5
+    .guide-detail-header
+      h1= guide.title
 
-      .guide-detail-tags
-            span.tag=guide.genre
-            span.tag=guide.skillLevel
+      .likes-container(data-id=guide.id)
+        img.like-btn(
+          src=guide.likedByUser ? "/images/Like_icon.svg" : "/images/Unlike_icon.svg"
+        )
+        p.like-number= guide.likes
 
-      p.guide-time Created at #{guide.createdAt}
+    .guide-detail-tags
+      span.tag= guide.genre
+      span.tag= guide.skillLevel
 
-      .guide-detail-layout
-        section.guide-detail-content
-          p=guide.content
+    p.guide-time Created at #{guide.createdAt}
 
-        aside.guide-detail-comments
+    .guide-detail-layout
+      section.guide-detail-content
+        p= guide.content
 
-          .guide-detail-comments-box
-            h2 Comments
-            input.guide-detail-input(type="text" placeholder="Write a comments...")
+      aside.guide-detail-comments
+        .guide-detail-comments-box
+          h2 Comments
+          if Logged
+            form.comments-form(method="POST", action=`/guide-details/${guide.id}/comment`)
+              input.guide-detail-input(
+                type="text"
+                name="comment"
+                placeholder="Write a comment..."
+                required
+              )
+              button.btn(type="submit") Post
+          else
+            p You must be logged in to comment.
 
-            each comment in guide.comments
-              .guide-detail-comment
-                .guide-detail-avatar
-                .guide-detail-comment-body
-                  h3 #{comment.username}
-                  p #{comment.comment}
+          each comment in guide.comments
+            .guide-detail-comment
+              .guide-detail-avatar
+              .guide-detail-comment-body
+                h3 #{comment.username}
+                p #{comment.comment}
+
+  script.
+    document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll(".likes-container").forEach(container => {
+            const btn = container.querySelector(".like-btn");
+            const countEl = container.querySelector(".like-number");
+            const gid = container.dataset.id;
+
+            btn.addEventListener("click", async () => {
+                const res = await fetch(`/like/${gid}`, { method: "POST" });
+
+                if (res.status === 401) {
+                    alert("Login required");
+                    return;
+                }
+
+                const data = await res.json();
+                let count = parseInt(countEl.textContent);
+
+                if (data.liked) {
+                    count++;
+                    btn.src = "/images/Like_icon.svg";
+                } else {
+                    count--;
+                    btn.src = "/images/Unlike_icon.svg";
+                }
+
+                countEl.textContent = count;
+            });
+        });
+    });

@@ -1,15 +1,20 @@
 extends websitelayout
 
+block styles
+  link(rel="stylesheet", href="/style/login.css") 
+
 block content
-  h1 Login
+  .login-container
+    .login-card
+      h1 Login
 
-  form(method="POST", action="/login")
-    div
-      label(for="username") Username
-      input(type="text", name="username", required)
+      form(method="POST", action="/login")
+        .form-group
+          label(for="username") Username
+          input(type="text", name="username", required)
 
-    div
-      label(for="password") Password
-      input(type="password", name="password", required)
+        .form-group
+          label(for="password") Password
+          input(type="password", name="password", required)
 
-    button(type="submit") Login
+        button.btn(type="submit") Login
