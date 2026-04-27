@@ -6,13 +6,14 @@ const db = require("../services/db2");
 // 🔹 GET login page
 router.get("/login", (req, res) => {
     res.render("login", {
-        error: req.query.error
+        error: req.query.error,
+        redirect: req.query.redirect || ""
     });
 });
 
 
 router.post("/login", async (req, res) => {
-    const { username, password } = req.body;
+    const { username, password, redirect } = req.body;
 
     try {
         const rows = await db.query(
@@ -35,7 +36,8 @@ router.post("/login", async (req, res) => {
 
         req.session.userId = user.userID;
 
-        res.redirect("/profile");
+        const safeRedirect = (redirect && redirect.startsWith('/') && !redirect.startsWith('//')) ? redirect : '/profile';
+        res.redirect(safeRedirect);
 
     } catch (err) {
         console.error("Login error:", err);

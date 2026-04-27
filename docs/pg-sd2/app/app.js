@@ -20,6 +20,7 @@ app.use(session({
 
 app.use((req,res,next) => {
     res.locals.Logged = !!req.session.userId;
+    res.locals.userId = req.session.userId || null;
     next();
 });
 
@@ -192,20 +193,22 @@ app.get("/profile", async function (req, res) {
             ORDER BY created_at DESC
         `, [userId]);
 
-        // 4. Events
-        const upcomingEventRows = await db.query(`
-            SELECT Event_Name, date, Skill_level, status
-            FROM Events
-            WHERE userID = ? AND status = 'upcoming'
-            ORDER BY date ASC
-        `, [userId]);
+        // 4. Events the user has JOINED, split by date into upcoming/completed
+        let allJoinedEventRows = [];
+        try {
+            allJoinedEventRows = await db2.query(`
+                SELECT e.EventID, e.Event_Name, e.date, e.Skill_level
+                FROM Events e
+                JOIN event_registrations er ON er.EventID = e.EventID
+                WHERE er.userID = ?
+                ORDER BY e.date ASC
+            `, [userId]);
+        } catch(e) {
+            console.error("Could not fetch joined events:", e.message);
+        }
 
-        const completedEventRows = await db.query(`
-            SELECT Event_Name, date, Skill_level, status
-            FROM Events
-            WHERE userID = ? AND status = 'completed'
-            ORDER BY date DESC
-        `, [userId]);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
 
         const user = {
             username: userRows[0].username || "Unknown User",
@@ -222,10 +225,13 @@ app.get("/profile", async function (req, res) {
         const stats = {
             tipsCreated: createdRows[0]?.tipsCreated || 0,
             tipsSaved: 0,
-            tipsLiked: likedRows[0]?.tipsLiked || 0
+            tipsLiked: likedRows[0]?.tipsLiked || 0,
+            eventsJoined: allJoinedEventRows.length,
+            eventsCompleted: allJoinedEventRows.filter(e => new Date(e.date) < today).length
         };
 
         const formattedTips = tipsRows.map((tip) => ({
+            gid: tip.GID,
             title: tip.title || "Untitled Tip",
             game: tip.Genre || "Unknown",
             date: tip.created_at
@@ -236,23 +242,23 @@ app.get("/profile", async function (req, res) {
                 : "No summary available"
         }));
 
-        const upcomingEvents = upcomingEventRows.map((event) => ({
-            name: event.Event_Name || "Untitled Event",
-            date: event.date
-                ? new Date(event.date).toLocaleDateString("en-GB")
-                : "No date",
-            skillLevel: event.Skill_level || "Unknown",
-            status: event.status || "Unknown"
-        }));
+        const upcomingEvents = allJoinedEventRows
+            .filter(e => new Date(e.date) >= today)
+            .map(e => ({
+                id: e.EventID,
+                name: e.Event_Name || "Untitled Event",
+                date: e.date ? new Date(e.date).toLocaleDateString("en-GB") : "No date",
+                skillLevel: e.Skill_level || "Unknown"
+            }));
 
-        const completedEvents = completedEventRows.map((event) => ({
-            name: event.Event_Name || "Untitled Event",
-            date: event.date
-                ? new Date(event.date).toLocaleDateString("en-GB")
-                : "No date",
-            skillLevel: event.Skill_level || "Unknown",
-            status: event.status || "Unknown"
-        }));
+        const completedEvents = allJoinedEventRows
+            .filter(e => new Date(e.date) < today)
+            .map(e => ({
+                id: e.EventID,
+                name: e.Event_Name || "Untitled Event",
+                date: e.date ? new Date(e.date).toLocaleDateString("en-GB") : "No date",
+                skillLevel: e.Skill_level || "Unknown"
+            }));
 
         // Activity boxes based on real profile data
         const activityData = [
@@ -349,7 +355,24 @@ app.get("/db_test", function (req, res) {
     });
 });
 
-// Start server on port 3000
-app.listen(3000, function () {
-    console.log("Server running at http://127.0.0.1:3000/");
-});
+// Start server only after ensuring required tables exist
+(async () => {
+    try {
+        await db2.query(`
+            CREATE TABLE IF NOT EXISTS event_registrations (
+                id INT NOT NULL AUTO_INCREMENT,
+                EventID INT NOT NULL,
+                userID INT NOT NULL,
+                joined_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                UNIQUE KEY event_user (EventID, userID)
+            )
+        `);
+        console.log("event_registrations table ready");
+    } catch (e) {
+        console.error("Could not create event_registrations table:", e.message);
+    }
+    app.listen(3000, function () {
+        console.log("Server running at http://127.0.0.1:3000/");
+    });
+})();

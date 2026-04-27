@@ -41,15 +41,22 @@ block content
         .profile-right
           .overview-card
             h3 Overview
-            .overview-row
-              span Tips Created
-              strong= stats.tipsCreated
-            .overview-row
-              span Tips Saved
-              strong= stats.tipsSaved
-            .overview-row
-              span Tips Liked
-              strong= stats.tipsLiked
+            .scroll-list
+              .overview-row
+                span Tips Created
+                strong= stats.tipsCreated
+              .overview-row
+                span Tips Saved
+                strong= stats.tipsSaved
+              .overview-row
+                span Tips Liked
+                strong= stats.tipsLiked
+              .overview-row
+                span Events Joined
+                strong= stats.eventsJoined
+              .overview-row
+                span Events Completed
+                strong= stats.eventsCompleted
 
           .graph-card
             h3 Activity
@@ -66,16 +73,18 @@ block content
         .profile-section
           h3 My Tips
           if tips && tips.length
-            each tip in tips
-              .content-card
-                h4= tip.title
-                p
-                  strong Game:
-                  |  #{tip.game}
-                p
-                  strong Date:
-                  |  #{tip.date}
-                p= tip.summary
+            .scroll-list
+              each tip in tips
+                .content-card
+                  h4
+                    a.card-link(href='/guide-details/' + tip.gid)= tip.title
+                  p
+                    strong Game:
+                    |  #{tip.game}
+                  p
+                    strong Date:
+                    |  #{tip.date}
+                  p= tip.summary
           else
             .content-card.empty-state
               h4 No tips yet
@@ -84,18 +93,17 @@ block content
         .profile-section
           h3 Upcoming Events
           if upcomingEvents && upcomingEvents.length
-            each event in upcomingEvents
-              .content-card
-                h4= event.name
-                p
-                  strong Date:
-                  |  #{event.date}
-                p
-                  strong Skill Level:
-                  |  #{event.skillLevel}
-                p
-                  strong Status:
-                  |  #{event.status}
+            .scroll-list
+              each event in upcomingEvents
+                .content-card
+                  h4
+                    a.card-link(href='/events/' + event.id)= event.name
+                  p
+                    strong Date:
+                    |  #{event.date}
+                  p
+                    strong Skill Level:
+                    |  #{event.skillLevel}
           else
             .content-card.empty-state
               h4 No upcoming events
@@ -104,19 +112,39 @@ block content
         .profile-section
           h3 Completed Events
           if completedEvents && completedEvents.length
-            each event in completedEvents
-              .content-card
-                h4= event.name
-                p
-                  strong Date:
-                  |  #{event.date}
-                p
-                  strong Skill Level:
-                  |  #{event.skillLevel}
-                p
-                  strong Status:
-                  |  #{event.status}
+            .scroll-list
+              each event in completedEvents
+                .content-card
+                  h4
+                    a.card-link(href='/events/' + event.id)= event.name
+                  p
+                    strong Date:
+                    |  #{event.date}
+                  p
+                    strong Skill Level:
+                    |  #{event.skillLevel}
           else
             .content-card.empty-state
               h4 No completed events
               p This user has not completed any events yet.
+
+  script.
+    document.querySelectorAll('.scroll-list').forEach(function(el) {
+      var isDown = false, startY, scrollTop;
+      el.addEventListener('mousedown', function(e) {
+        isDown = true;
+        startY = e.pageY - el.getBoundingClientRect().top;
+        scrollTop = el.scrollTop;
+        el.style.cursor = 'grabbing';
+      });
+      window.addEventListener('mouseup', function() {
+        isDown = false;
+        el.style.cursor = 'grab';
+      });
+      el.addEventListener('mousemove', function(e) {
+        if (!isDown) return;
+        e.preventDefault();
+        var y = e.pageY - el.getBoundingClientRect().top;
+        el.scrollTop = scrollTop - (y - startY) * 1.5;
+      });
+    });

@@ -9,6 +9,8 @@ block content
       h1 Login
 
       form(method="POST", action="/login")
+        if redirect
+          input(type="hidden", name="redirect", value=redirect)
         .form-group
           label(for="username") Username
           input(type="text", name="username", required)

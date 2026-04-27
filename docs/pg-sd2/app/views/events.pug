@@ -1,6 +1,6 @@
 extends websitelayout
 
-block styles 
+block styles
   link(rel="stylesheet", href="/style/events.css")
 
 block content
@@ -34,23 +34,33 @@ block content
                   .meta-row
                     span 🔢
                     | &nbsp;Slots Left:&nbsp;
-                    span.meta-val= (featured.max_participants || 100) - (featured.participant_count || 0)
+                    span.meta-val= (featured.max_participants || 20) - (featured.participant_count || 0)
+                - var featExpired = featured.date && new Date(featured.date) < new Date()
                 .featured-btns
-                  button.btn-primary(type='button') Join Tournament
-                  button.btn-outline(type='button') View Details
+                  if featExpired
+                    a.btn-primary(href='/events/' + featured.EventID) Join Event
+                  else if Logged
+                    form(action='/events/' + featured.EventID + '/join', method='POST', style='display:inline')
+                      button.btn-primary(type='submit') Join Event
+                  else
+                    a.btn-primary(href='/login?redirect=/events/' + featured.EventID) Join Event
+                  a.btn-outline(href='/events/' + featured.EventID) View Details
 
               .featured-right
                 .trophy 🏆
                 .featured-stats
+                  - var featMax = featured.max_participants || 20
+                  - var featTaken = featured.participant_count || 0
+                  - var featLeft = featMax - featTaken
                   .stat-box
-                    .stat-num= featured.participant_count || 0
+                    .stat-num= featTaken
                     .stat-lbl Teams
                   .stat-box
-                    .stat-num= (featured.max_participants || 100) - (featured.participant_count || 0)
+                    .stat-num= featLeft
                     .stat-lbl Slots Left
                   .stat-box
-                    .stat-num Live
-                    .stat-lbl Bracket
+                    .stat-num(style=(featLeft <= 0 ? 'color:#f87171' : 'color:#4ade80'))= featLeft <= 0 ? 'Full' : 'Open'
+                    .stat-lbl Status
 
         //- ── FIND A EVENT ──
         .section-header
@@ -60,19 +70,17 @@ block content
 
         .filter-tags
           button.filter-tag.active(onclick='filterTags(this, "all")') All
-          each game in games
-            button.filter-tag(onclick='filterTags(this, "' + game.slug + '")') #{game.name}
-          button.filter-tag(onclick='filterTags(this, "solo")') Solo
-          button.filter-tag(onclick='filterTags(this, "duo")') Duo
-          button.filter-tag(onclick='filterTags(this, "team")') Team
+          button.filter-tag(onclick='filterTags(this, "beginner")') Beginner
+          button.filter-tag(onclick='filterTags(this, "intermediate")') Intermediate
+          button.filter-tag(onclick='filterTags(this, "advanced")') Advanced
 
         //- ── TOURNAMENT CARDS ──
         if events && events.length
           .cards-grid#cardsGrid
             each event in events
-              .t-card(data-tag=(event.game_slug || '') + ' ' + (event.format || ''), data-title=(event.title || event.event_name || '').toLowerCase())
-                .t-card__title= event.title || event.event_name
-                p.t-card__desc= event.description || event.skill_level || ''
+              .t-card(data-tag=(event.Skill_level || '').toLowerCase(), data-title=(event.title || event.Event_Name || '').toLowerCase())
+                .t-card__title= event.title || event.Event_Name
+                p.t-card__desc= event.description || event.Skill_level || ''
                 .t-card__meta
                   .t-card__meta-row
                     span 🎮
@@ -85,24 +93,48 @@ block content
                     .t-card__meta-row
                       span 🏆
                       | &nbsp;#{event.prize}
+                - var cardExpired = event.date && new Date(event.date) < new Date()
                 .t-card__btns
-                  button.btn-sm-primary(type='button') Join
-                  button.btn-sm-outline(type='button') Details
+                  if cardExpired
+                    a.btn-sm-primary(href='/events/' + event.EventID) Join
+                  else if Logged
+                    form(action='/events/' + event.EventID + '/join', method='POST', style='display:inline;flex:1')
+                      button.btn-sm-primary(type='submit', style='width:100%') Join
+                  else
+                    a.btn-sm-primary(href='/login?redirect=/events/' + event.EventID) Join
+                  a.btn-sm-outline(href='/events/' + event.EventID) Details
+          p.empty-state#emptyState(style='display:none') No events match your search. 🎮
         else
           p.empty-state No upcoming events right now. Check back soon! 🎮
 
-        //- ── HIGHLIGHTS ──
-        h2.section-title(style='margin-bottom:1rem;margin-top:2rem') Tournament Highlights
-        .highlights-grid
-          .highlight-box
-            .highlight-label Top Game
-            .highlight-value= highlights.topGame
-          .highlight-box
-            .highlight-label Active Players
-            .highlight-value= highlights.activePlayers
-          .highlight-box
-            .highlight-label This Week's Events
-            .highlight-value= highlights.weekEvents
-          .highlight-box
-            .highlight-label Top Reward
-            .highlight-value.gold 🥇 #{highlights.topPrize}
+
+    script.
+      var activeTag = 'all';
+
+      function applyFilters() {
+        var search = document.getElementById('searchInput').value.toLowerCase().trim();
+        var cards = document.querySelectorAll('#cardsGrid .t-card');
+        var visible = 0;
+        cards.forEach(function(card) {
+          var title = card.getAttribute('data-title') || '';
+          var tag   = card.getAttribute('data-tag') || '';
+          var matchSearch = search === '' || title.includes(search);
+          var matchTag    = activeTag === 'all' || tag === activeTag;
+          var show = matchSearch && matchTag;
+          card.style.display = show ? '' : 'none';
+          if (show) visible++;
+        });
+        var empty = document.getElementById('emptyState');
+        if (empty) empty.style.display = visible === 0 ? '' : 'none';
+      }
+
+      function searchCards() { applyFilters(); }
+
+      function filterTags(btn, tag) {
+        activeTag = tag;
+        document.querySelectorAll('.filter-tag').forEach(function(b) {
+          b.classList.remove('active');
+        });
+        btn.classList.add('active');
+        applyFilters();
+      }

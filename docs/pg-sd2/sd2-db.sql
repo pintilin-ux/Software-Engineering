@@ -102,7 +102,16 @@ INSERT INTO `Events` (`EventID`, `userID`, `Event_Name`, `Skill_level`, `date`, 
 (1, 101, 'Chess Event', 'Beginner', '2026-04-01', 'upcoming'),
 (2, 102, 'Cooking Class', 'Intermediate', '2026-04-05', 'upcoming'),
 (3, 103, 'Coding Bootcamp', 'Beginner', '2026-04-10', 'completed'),
-(4, 104, 'Pro Gaming Finals', 'Advanced', '2026-04-15', 'completed');
+(4, 104, 'Pro Gaming Finals', 'Advanced', '2026-04-15', 'completed'),
+(5, 101, 'Valorant Champions Cup', 'Advanced', '2026-05-10', 'upcoming'),
+(6, 102, 'League of Legends Clash', 'Intermediate', '2026-05-17', 'upcoming'),
+(7, 103, 'Fortnite Friday Tournament', 'Beginner', '2026-05-24', 'upcoming'),
+(8, 104, 'Call of Duty: Warzone Open', 'Advanced', '2026-06-01', 'upcoming'),
+(9, 101, 'Apex Legends Global Series', 'Intermediate', '2026-06-08', 'upcoming'),
+(10, 102, 'CS2 Open Cup', 'Advanced', '2026-06-15', 'upcoming'),
+(11, 103, 'Minecraft Build Battle', 'Beginner', '2026-06-22', 'upcoming'),
+(12, 104, 'Overwatch 2 League', 'Intermediate', '2026-07-05', 'upcoming'),
+(13, 101, 'Rocket League Championship', 'Advanced', '2026-07-12', 'upcoming');
 
 -- --------------------------------------------------------
 

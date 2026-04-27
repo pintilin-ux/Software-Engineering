@@ -315,6 +315,31 @@
     color: rgba(255, 255, 255, 0.18);
 }
 
+/* ── DRAG-TO-SCROLL LIST ── */
+.scroll-list {
+    max-height: 300px;
+    overflow-y: auto;
+    cursor: grab;
+    user-select: none;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.2) transparent;
+    padding-right: 4px;
+}
+.scroll-list::-webkit-scrollbar { width: 4px; }
+.scroll-list::-webkit-scrollbar-track { background: transparent; }
+.scroll-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 2px; }
+
+/* ── CLICKABLE CARD TITLES ── */
+.card-link {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 800;
+}
+.card-link:hover {
+    color: #7ea9ff;
+    text-decoration: underline;
+}
+
 @media (max-width: 1100px) {
     .profile-bottom {
         grid-template-columns: 1fr;

@@ -1,5 +1,63 @@
 extends websitelayout
+
+block styles
+  link(rel="stylesheet", href="/style/events.css")
+
 block content
-    h1= event.Event_Name
-    p Skill level: #{event.Skill_level}
-    p Date: #{event.date}
+  .tournaments-page
+    a.back-link(href='/events') ← Back to Events
+
+    .event-single-card
+      h1.event-single-title= event.Event_Name
+
+      .event-meta
+        .meta-row
+          span 📅
+          | &nbsp;Date:&nbsp;
+          span.meta-val= event.date ? new Date(event.date).toLocaleDateString('en-GB', {day:'numeric', month:'long', year:'numeric'}) : 'TBC'
+        .meta-row
+          span 🎯
+          | &nbsp;Skill Level:&nbsp;
+          span.meta-val= event.Skill_level || 'All levels'
+        .meta-row
+          span 📊
+          | &nbsp;Status:&nbsp;
+          span.meta-val= event.status || 'Unknown'
+        if event.username
+          .meta-row
+            span 👤
+            | &nbsp;Organiser:&nbsp;
+            span.meta-val= event.username
+
+      - var maxSlots = 20
+      - var taken = registrationCount || 0
+      - var slotsLeft = maxSlots - taken
+      - var isExpired = event.date && new Date(event.date) < new Date()
+      .meta-row
+        span 👥
+        | &nbsp;Teams Joined:&nbsp;
+        span.meta-val= taken + ' / ' + maxSlots
+      .meta-row
+        span 🎟️
+        | &nbsp;Slots Left:&nbsp;
+        span.meta-val(style=slotsLeft <= 0 ? 'color:#f87171' : '')= slotsLeft <= 0 ? 'Full' : slotsLeft
+
+      if justJoined
+        .success-msg ✅ You have successfully joined this event!
+      if isFull
+        .error-msg ❌ This event is full.
+
+      .event-actions
+        if isExpired
+          button.btn-primary(disabled, style='opacity:0.5;cursor:not-allowed') Event has Expired
+        else if isRegistered
+          button.btn-primary(disabled) ✅ Already Joined
+          form(action='/events/' + event.EventID + '/quit', method='POST', style='display:contents')
+            button.btn-danger(type='submit') Quit Event
+        else if slotsLeft <= 0
+          button.btn-primary(disabled) Event Full
+        else if Logged
+          form(action='/events/' + event.EventID + '/join', method='POST', style='display:contents')
+            button.btn-primary(type='submit') Join Event
+        else
+          a.btn-primary(href='/login?redirect=/events/' + event.EventID) Login to Join
