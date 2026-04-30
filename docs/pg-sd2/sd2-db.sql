@@ -27,7 +27,7 @@ SET time_zone = "+00:00";
 -- Table structure for table `comments`
 --
 
-CREATE TABLE `comments` (
+CREATE TABLE IF NOT EXISTS `comments` (
   `CMID` int NOT NULL,
   `userID` int DEFAULT NULL,
   `GID` int DEFAULT NULL,
@@ -57,7 +57,7 @@ INSERT INTO `comments` (`CMID`, `userID`, `GID`, `comment`, `created_at`) VALUES
 -- Table structure for table `customer`
 --
 
-CREATE TABLE `customer` (
+CREATE TABLE IF NOT EXISTS `customer` (
   `PID` int NOT NULL,
   `name` varchar(50) NOT NULL,
   `surname` varchar(50) NOT NULL,
@@ -85,7 +85,7 @@ INSERT INTO `customer` (`PID`, `name`, `surname`, `email_address`, `birth`) VALU
 -- Table structure for table `Events`
 --
 
-CREATE TABLE `Events` (
+CREATE TABLE IF NOT EXISTS `Events` (
   `EventID` int NOT NULL,
   `userID` int DEFAULT NULL,
   `Event_Name` varchar(100) DEFAULT NULL,
@@ -100,7 +100,7 @@ CREATE TABLE `Events` (
 
 INSERT INTO `Events` (`EventID`, `userID`, `Event_Name`, `Skill_level`, `date`, `status`) VALUES
 (1, 101, 'Chess Event', 'Beginner', '2026-04-01', 'upcoming'),
-(2, 102, 'Cooking Class', 'Intermediate', '2026-04-05', 'upcoming'),
+(2, 102, 'Cooking Class', 'Intermediate', '2026-05-05', 'upcoming'),
 (3, 103, 'Coding Bootcamp', 'Beginner', '2026-04-10', 'completed'),
 (4, 104, 'Pro Gaming Finals', 'Advanced', '2026-04-15', 'completed'),
 (5, 101, 'Valorant Champions Cup', 'Advanced', '2026-05-10', 'upcoming'),
@@ -116,28 +116,10 @@ INSERT INTO `Events` (`EventID`, `userID`, `Event_Name`, `Skill_level`, `date`, 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `event_registrations`
---
-
-CREATE TABLE `event_registrations` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `EventID` int NOT NULL,
-  `userID` int NOT NULL,
-  `registered_at` timestamp DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `unique_registration` (`EventID`, `userID`),
-  KEY `userID` (`userID`),
-  CONSTRAINT `er_event_fk` FOREIGN KEY (`EventID`) REFERENCES `Events` (`EventID`),
-  CONSTRAINT `er_user_fk` FOREIGN KEY (`userID`) REFERENCES `users` (`userID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `guides`
 --
 
-CREATE TABLE `guides` (
+CREATE TABLE IF NOT EXISTS `guides` (
   `GID` int NOT NULL,
   `userID` int DEFAULT NULL,
   `title` varchar(100) DEFAULT NULL,
@@ -163,7 +145,7 @@ INSERT INTO `guides` (`GID`, `userID`, `title`, `content`, `Genre`, `Skill_level
 -- Table structure for table `likes`
 --
 
-CREATE TABLE `likes` (
+CREATE TABLE IF NOT EXISTS `likes` (
   `userID` int NOT NULL,
   `GID` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -191,7 +173,7 @@ INSERT INTO `likes` (`userID`, `GID`) VALUES
 -- Table structure for table `users`
 --
 
-CREATE TABLE `users` (
+CREATE TABLE IF NOT EXISTS `users` (
   `userID` int NOT NULL,
   `PID` int DEFAULT NULL,
   `username` varchar(20) NOT NULL,
@@ -291,6 +273,24 @@ ALTER TABLE `likes`
 --
 ALTER TABLE `users`
   ADD CONSTRAINT `users_ibfk_1` FOREIGN KEY (`PID`) REFERENCES `customer` (`PID`);
+
+--
+-- Table structure for table `event_registrations`
+-- (created after PKs are set on Events and users)
+--
+
+CREATE TABLE IF NOT EXISTS `event_registrations` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `EventID` int NOT NULL,
+  `userID` int NOT NULL,
+  `registered_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_registration` (`EventID`, `userID`),
+  KEY `userID` (`userID`),
+  CONSTRAINT `er_event_fk` FOREIGN KEY (`EventID`) REFERENCES `Events` (`EventID`),
+  CONSTRAINT `er_user_fk` FOREIGN KEY (`userID`) REFERENCES `users` (`userID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
