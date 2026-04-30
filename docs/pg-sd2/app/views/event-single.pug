@@ -19,10 +19,11 @@ block content
           span 🎯
           | &nbsp;Skill Level:&nbsp;
           span.meta-val= event.Skill_level || 'All levels'
+        - var isExpired = event.date && new Date(event.date) < new Date()
         .meta-row
           span 📊
           | &nbsp;Status:&nbsp;
-          span.meta-val= event.status || 'Unknown'
+          span.meta-val= isExpired ? 'Completed' : (event.status || 'Upcoming')
         if event.username
           .meta-row
             span 👤
@@ -32,7 +33,6 @@ block content
       - var maxSlots = 20
       - var taken = registrationCount || 0
       - var slotsLeft = maxSlots - taken
-      - var isExpired = event.date && new Date(event.date) < new Date()
       .meta-row
         span 👥
         | &nbsp;Teams Joined:&nbsp;
