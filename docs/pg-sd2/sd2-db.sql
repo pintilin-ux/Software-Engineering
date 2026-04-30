@@ -116,6 +116,24 @@ INSERT INTO `Events` (`EventID`, `userID`, `Event_Name`, `Skill_level`, `date`, 
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `event_registrations`
+--
+
+CREATE TABLE `event_registrations` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `EventID` int NOT NULL,
+  `userID` int NOT NULL,
+  `registered_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_registration` (`EventID`, `userID`),
+  KEY `userID` (`userID`),
+  CONSTRAINT `er_event_fk` FOREIGN KEY (`EventID`) REFERENCES `Events` (`EventID`),
+  CONSTRAINT `er_user_fk` FOREIGN KEY (`userID`) REFERENCES `users` (`userID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `guides`
 --
 
