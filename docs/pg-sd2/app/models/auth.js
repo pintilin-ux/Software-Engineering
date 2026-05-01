@@ -3,14 +3,12 @@ const router = express.Router();
 const bcrypt = require("bcryptjs");
 const db = require("../services/db2");
 
-// 🔹 GET login page
 router.get("/login", (req, res) => {
     res.render("login", {
         error: req.query.error,
         redirect: req.query.redirect || ""
     });
 });
-
 
 router.post("/login", async (req, res) => {
     const { username, password, redirect } = req.body;
@@ -27,16 +25,22 @@ router.post("/login", async (req, res) => {
 
         const user = rows[0];
 
-        // ✅ TEMP TEST (NO BCRYPT YET)
-        const valid = password === user.password_hash;
+       
+        const valid = await bcrypt.compare(password, user.password_hash);
 
         if (!valid) {
             return res.redirect("/login?error=1");
         }
 
+       
         req.session.userId = user.userID;
 
-        const safeRedirect = (redirect && redirect.startsWith('/') && !redirect.startsWith('//')) ? redirect : '/profile';
+       
+        const safeRedirect =
+            (redirect && redirect.startsWith('/') && !redirect.startsWith('//'))
+                ? redirect
+                : '/profile';
+
         res.redirect(safeRedirect);
 
     } catch (err) {
@@ -45,8 +49,10 @@ router.post("/login", async (req, res) => {
     }
 });
 
+module.exports = router;
 
-// 🔹 Logout
+
+// Logout
 router.get("/logout", (req, res) => {
     req.session.destroy(() => {
         res.redirect("/index");
